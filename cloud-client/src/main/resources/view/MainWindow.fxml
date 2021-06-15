@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/" fx:controller="ru.svetlov.storage.client.controller.MainWindowController">
+<center>
+    <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <TreeView fx:id="leftTreeView" prefHeight="Infinity" prefWidth="200.0" />
+        <TreeTableView fx:id="rightTreeTableView" prefHeight="Infinity" prefWidth="200.0" />
+    </SplitPane>
+</center>
+<top>
+    <VBox prefHeight="100.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+        <MenuBar>
+            <Menu mnemonicParsing="false" text="File">
+                <MenuItem mnemonicParsing="false" text="Close" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Edit">
+                <MenuItem mnemonicParsing="false" text="Delete" />
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+                <MenuItem mnemonicParsing="false" text="About" />
+            </Menu>
+        </MenuBar>
+        <ToolBar prefHeight="40.0" prefWidth="200.0">
+            <Button mnemonicParsing="false" text="Button" />
+        </ToolBar>
+    </VBox>
+</top>
+<bottom>
+    <TilePane tileAlignment="CENTER">
+        <Text text="Text" />
+
+        <Text text="Text" />
+
+        <ProgressBar progress="0.10"/>
+        <Text fx:id="timeText"/>
+
+    </TilePane>
+</bottom>
+</BorderPane>
