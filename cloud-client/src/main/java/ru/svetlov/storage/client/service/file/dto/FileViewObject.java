@@ -3,13 +3,14 @@ package ru.svetlov.storage.client.service.file.dto;
 import ru.svetlov.storage.client.service.file.enums.FileType;
 
 import java.nio.file.attribute.FileTime;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /** Класс для передачи объектов файловой системы.
  *  <p>{@code parent} - элемент родитель
  *  <p>{@code filename} - имя файла / директории
  *  <p>{@code type} - тип объекта {@link ru.svetlov.storage.client.service.file.enums.FileType}
+ *  <p>{@code size} - размер файла
+ *  <p>{@code filename} - время последнего изменения
  *  <p>для директорий возможно задать список потомков {@link #children children}
  */
 public class FileViewObject {
