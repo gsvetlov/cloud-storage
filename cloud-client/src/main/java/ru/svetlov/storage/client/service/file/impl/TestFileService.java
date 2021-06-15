@@ -7,7 +7,6 @@ import ru.svetlov.storage.client.service.file.enums.FileType;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
@@ -21,6 +20,7 @@ public class TestFileService implements FileViewService {
         getPathObjects(path);
         return files;
     }
+
     @Override
     public List<FileViewObject> getListView(String path) {
         return getListView(Paths.get(path));
@@ -32,7 +32,7 @@ public class TestFileService implements FileViewService {
                     path, EnumSet.noneOf(FileVisitOption.class), 1,
                     new FileVisitor<Path>() {
                         @Override
-                        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                             Path parent = dir.getRoot() == null ? null : dir.getParent();
                             Path filename = dir.getFileName();
                             register(parent, filename, FileType.DIRECTORY, attrs);
@@ -40,18 +40,18 @@ public class TestFileService implements FileViewService {
                         }
 
                         @Override
-                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                             register(file.getParent(), file.getFileName(), getFileType(attrs), attrs);
                             return FileVisitResult.CONTINUE;
                         }
 
                         @Override
-                        public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+                        public FileVisitResult visitFileFailed(Path file, IOException exc) {
                             return FileVisitResult.SKIP_SUBTREE;
                         }
 
                         @Override
-                        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                        public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
                             return FileVisitResult.CONTINUE;
                         }
                     });
