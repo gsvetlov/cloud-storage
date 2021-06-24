@@ -1,13 +1,20 @@
 package ru.svetlov.server.factory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import ru.svetlov.server.core.CloudServerService;
 import ru.svetlov.server.core.NettyCoreServer;
 import ru.svetlov.server.service.DataRepository;
+import ru.svetlov.server.service.command.pool.CommandPool;
 import ru.svetlov.server.service.command.pool.CommandRepositoryProvider;
 import ru.svetlov.server.service.command.pool.impl.InMemoryCommandRepository;
 import ru.svetlov.server.service.command.pool.impl.InMemoryCommandPool;
+import ru.svetlov.server.service.jdbc.AuthenticationProvider;
 import ru.svetlov.server.service.jdbc.TestEntityRepository;
+import ru.svetlov.server.service.jdbc.impl.StubAuthenticationProvider;
 import ru.svetlov.server.service.jdbc.impl.StubDataRepository;
+import ru.svetlov.server.service.json.JsonMapProvider;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -37,7 +44,9 @@ public class Factory implements ServiceLocator {
     private void configureServices() {
         services.put(TestEntityRepository.class, new StubDataRepository());
         services.put(CommandRepositoryProvider.class, new InMemoryCommandRepository(this));
-        services.put(ru.svetlov.server.service.command.pool.CommandPool.class, new InMemoryCommandPool(this.getCommandRepositoryProvider()));
+        services.put(CommandPool.class, new InMemoryCommandPool(this.getCommandRepositoryProvider()));
+        services.put(AuthenticationProvider.class, new StubAuthenticationProvider());
+        services.put(JsonMapProvider.class, JsonMapProvider.getInstance());
     }
 
     public void addService(Type serviceName, Object serviceInstance) {
@@ -58,8 +67,14 @@ public class Factory implements ServiceLocator {
         return (CommandRepositoryProvider) getService(CommandRepositoryProvider.class).orElse(null);
     }
 
-    public ru.svetlov.server.service.command.pool.CommandPool getCommandPool(){
-        return (ru.svetlov.server.service.command.pool.CommandPool) getService(ru.svetlov.server.service.command.pool.CommandPool.class).orElse(null);
+    public CommandPool getCommandPool(){
+        return (CommandPool) getService(CommandPool.class).orElse(null);
     }
+
+    public JsonMapProvider getJsonMapProvider(){
+        return (JsonMapProvider) getService(JsonMapProvider.class).orElse(null);
+    }
+
+
 
 }

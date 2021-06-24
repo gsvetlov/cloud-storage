@@ -1,13 +1,13 @@
 package ru.svetlov.domain.command.base;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
 public abstract class GenericCommand implements Serializable {
     protected String command;

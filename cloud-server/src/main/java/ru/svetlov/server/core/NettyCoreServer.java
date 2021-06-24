@@ -11,9 +11,7 @@ import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
-import ru.svetlov.server.core.handler.inbound.CommandInboundHandler;
-import ru.svetlov.server.core.handler.inbound.EchoService;
-import ru.svetlov.server.core.handler.inbound.ObjectMapperInboundHandler;
+import ru.svetlov.server.core.handler.inbound.*;
 
 public class NettyCoreServer implements CloudServerService {
 
@@ -52,8 +50,9 @@ public class NettyCoreServer implements CloudServerService {
                             socketChannel.pipeline().addLast(
                                     new ObjectEncoder(),
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                    new AuthorizationInboundHandler(),
                                     new EchoService()
-                            ).addLast(eventExecutors, new CommandInboundHandler());
+                            ).addLast(eventExecutors, new AuthenticationHandler());
                         }
                     });
             ChannelFuture future = bootstrap.bind(8189).sync();

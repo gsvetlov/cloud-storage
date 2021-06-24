@@ -9,9 +9,8 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import ru.svetlov.domain.command.base.GenericCommand;
-import ru.svetlov.domain.command.base.TestCommand;
+import ru.svetlov.domain.command.TestCommand;
 
-import javax.swing.plaf.IconUIResource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

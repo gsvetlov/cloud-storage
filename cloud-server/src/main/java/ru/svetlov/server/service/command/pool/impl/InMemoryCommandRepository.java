@@ -1,6 +1,6 @@
 package ru.svetlov.server.service.command.pool.impl;
 
-import ru.svetlov.domain.command.base.TestCommand;
+import ru.svetlov.domain.command.TestCommand;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
 import ru.svetlov.server.factory.Factory;
 import ru.svetlov.server.factory.ServiceLocator;
