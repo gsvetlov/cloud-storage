@@ -7,11 +7,11 @@ import ru.svetlov.server.service.command.pool.CommandRepositoryProvider;
 
 import java.util.Map;
 
-public class StaticCommandPool implements CommandPool {
+public class InMemoryCommandPool implements CommandPool {
 
-    private final Map<String, ru.svetlov.server.service.command.handler.CommandHandler> handlers;
+    private final Map<String, CommandHandler> handlers;
 
-    public StaticCommandPool(CommandRepositoryProvider provider) {
+    public InMemoryCommandPool(CommandRepositoryProvider provider) {
         handlers = provider.getCollection();
     }
 

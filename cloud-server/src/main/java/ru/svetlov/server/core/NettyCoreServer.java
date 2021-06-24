@@ -9,7 +9,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import ru.svetlov.server.service.CloudServerService;
+import io.netty.util.concurrent.DefaultEventExecutorGroup;
+import io.netty.util.concurrent.EventExecutorGroup;
+import ru.svetlov.server.core.handler.inbound.CommandInboundHandler;
+import ru.svetlov.server.core.handler.inbound.EchoService;
+import ru.svetlov.server.core.handler.inbound.ObjectMapperInboundHandler;
 
 public class NettyCoreServer implements CloudServerService {
 
@@ -30,12 +34,14 @@ public class NettyCoreServer implements CloudServerService {
 
     private NioEventLoopGroup bossGroup;
     private NioEventLoopGroup workerGroup;
+    private EventExecutorGroup eventExecutors;
 
     @Override
     public void startServer() {
         try {
             bossGroup = new NioEventLoopGroup(1);
             workerGroup = new NioEventLoopGroup(2);
+            eventExecutors = new DefaultEventExecutorGroup(4);
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap
                     .group(bossGroup, workerGroup)
@@ -45,8 +51,9 @@ public class NettyCoreServer implements CloudServerService {
                         protected void initChannel(SocketChannel socketChannel) {
                             socketChannel.pipeline().addLast(
                                     new ObjectEncoder(),
-                                    new ObjectDecoder(ClassResolvers.cacheDisabled(null))
-                            );
+                                    new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
+                                    new EchoService()
+                            ).addLast(eventExecutors, new CommandInboundHandler());
                         }
                     });
             ChannelFuture future = bootstrap.bind(8189).sync();
@@ -57,6 +64,7 @@ public class NettyCoreServer implements CloudServerService {
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
+            eventExecutors.shutdownGracefully();
             System.out.println("Сервер остановлен");
         }
 

@@ -1,13 +1,13 @@
 package ru.svetlov.server.factory;
 
-import ru.svetlov.server.service.CloudServerService;
+import ru.svetlov.server.core.CloudServerService;
 import ru.svetlov.server.core.NettyCoreServer;
-import ru.svetlov.server.service.DataRepositoryProvider;
-import ru.svetlov.server.service.command.pool.CommandPool;
+import ru.svetlov.server.service.DataRepository;
 import ru.svetlov.server.service.command.pool.CommandRepositoryProvider;
 import ru.svetlov.server.service.command.pool.impl.InMemoryCommandRepository;
-import ru.svetlov.server.service.command.pool.impl.StaticCommandPool;
-import ru.svetlov.server.service.jdbc.impl.StubDataRepositoryProvider;
+import ru.svetlov.server.service.command.pool.impl.InMemoryCommandPool;
+import ru.svetlov.server.service.jdbc.TestEntityRepository;
+import ru.svetlov.server.service.jdbc.impl.StubDataRepository;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -35,9 +35,9 @@ public class Factory implements ServiceLocator {
     }
 
     private void configureServices() {
-        services.put(DataRepositoryProvider.class, new StubDataRepositoryProvider());
+        services.put(TestEntityRepository.class, new StubDataRepository());
         services.put(CommandRepositoryProvider.class, new InMemoryCommandRepository(this));
-        services.put(CommandPool.class, new StaticCommandPool(this.getCommandRepositoryProvider()));
+        services.put(ru.svetlov.server.service.command.pool.CommandPool.class, new InMemoryCommandPool(this.getCommandRepositoryProvider()));
     }
 
     public void addService(Type serviceName, Object serviceInstance) {
@@ -58,8 +58,8 @@ public class Factory implements ServiceLocator {
         return (CommandRepositoryProvider) getService(CommandRepositoryProvider.class).orElse(null);
     }
 
-    public CommandPool getCommandPool(){
-        return (CommandPool) getService(CommandPool.class).orElse(null);
+    public ru.svetlov.server.service.command.pool.CommandPool getCommandPool(){
+        return (ru.svetlov.server.service.command.pool.CommandPool) getService(ru.svetlov.server.service.command.pool.CommandPool.class).orElse(null);
     }
 
 }

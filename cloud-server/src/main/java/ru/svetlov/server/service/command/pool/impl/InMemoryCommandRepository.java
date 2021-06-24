@@ -1,14 +1,11 @@
 package ru.svetlov.server.service.command.pool.impl;
 
-import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.domain.command.base.TestCommand;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
 import ru.svetlov.server.factory.Factory;
 import ru.svetlov.server.factory.ServiceLocator;
-import ru.svetlov.server.service.DataRepositoryProvider;
 import ru.svetlov.server.service.command.handler.CommandHandler;
 import ru.svetlov.server.service.command.pool.CommandRepositoryProvider;
-import ru.svetlov.server.service.jdbc.impl.StubDataRepositoryProvider;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -117,6 +114,7 @@ public class InMemoryCommandRepository implements CommandRepositoryProvider {
     // TODO: debug purposes ONLY!
     public static void main(String[] args) {
         TestCommand command = new TestCommand();
+        command.setParameters(new Object[]{1});
         System.out.println("command: " + command.getCommand());
         Factory.getInstance().getCommandPool().getHandler(command).process(command);
     }

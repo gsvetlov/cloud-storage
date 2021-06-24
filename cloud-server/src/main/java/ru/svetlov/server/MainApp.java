@@ -1,7 +1,7 @@
 package ru.svetlov.server;
 
 import ru.svetlov.server.factory.Factory;
-import ru.svetlov.server.service.CloudServerService;
+import ru.svetlov.server.core.CloudServerService;
 
 public class MainApp {
     public static void main(String[] args) {
