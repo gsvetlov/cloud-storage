@@ -1,6 +1,6 @@
-package ru.svetlov.server.service.command.pool;
+package ru.svetlov.server.service.pool;
 
-import ru.svetlov.server.service.command.handler.CommandHandler;
+import ru.svetlov.server.core.handler.command.CommandHandler;
 
 import java.util.Map;
 

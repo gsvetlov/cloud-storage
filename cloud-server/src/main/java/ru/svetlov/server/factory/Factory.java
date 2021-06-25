@@ -1,15 +1,13 @@
 package ru.svetlov.server.factory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectReader;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import ru.svetlov.server.core.CloudServerService;
 import ru.svetlov.server.core.NettyCoreServer;
-import ru.svetlov.server.service.DataRepository;
-import ru.svetlov.server.service.command.pool.CommandPool;
-import ru.svetlov.server.service.command.pool.CommandRepositoryProvider;
-import ru.svetlov.server.service.command.pool.impl.InMemoryCommandRepository;
-import ru.svetlov.server.service.command.pool.impl.InMemoryCommandPool;
+import ru.svetlov.server.service.file.FileInfoProvider;
+import ru.svetlov.server.service.file.impl.DebugFileInfoProvider;
+import ru.svetlov.server.service.pool.CommandPool;
+import ru.svetlov.server.service.pool.CommandRepositoryProvider;
+import ru.svetlov.server.service.pool.impl.InMemoryCommandRepository;
+import ru.svetlov.server.service.pool.impl.InMemoryCommandPool;
 import ru.svetlov.server.service.jdbc.AuthenticationProvider;
 import ru.svetlov.server.service.jdbc.TestEntityRepository;
 import ru.svetlov.server.service.jdbc.impl.StubAuthenticationProvider;
@@ -43,10 +41,11 @@ public class Factory implements ServiceLocator {
 
     private void configureServices() {
         services.put(TestEntityRepository.class, new StubDataRepository());
-        services.put(CommandRepositoryProvider.class, new InMemoryCommandRepository(this));
-        services.put(CommandPool.class, new InMemoryCommandPool(this.getCommandRepositoryProvider()));
         services.put(AuthenticationProvider.class, new StubAuthenticationProvider());
         services.put(JsonMapProvider.class, JsonMapProvider.getInstance());
+        services.put(FileInfoProvider.class, new DebugFileInfoProvider());
+        services.put(CommandRepositoryProvider.class, new InMemoryCommandRepository(this));
+        services.put(CommandPool.class, new InMemoryCommandPool(this.getCommandRepositoryProvider()));
     }
 
     public void addService(Type serviceName, Object serviceInstance) {

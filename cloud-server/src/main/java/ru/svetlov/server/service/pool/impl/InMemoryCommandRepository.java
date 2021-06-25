@@ -1,11 +1,11 @@
-package ru.svetlov.server.service.command.pool.impl;
+package ru.svetlov.server.service.pool.impl;
 
 import ru.svetlov.domain.command.TestCommand;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
 import ru.svetlov.server.factory.Factory;
 import ru.svetlov.server.factory.ServiceLocator;
-import ru.svetlov.server.service.command.handler.CommandHandler;
-import ru.svetlov.server.service.command.pool.CommandRepositoryProvider;
+import ru.svetlov.server.core.handler.command.CommandHandler;
+import ru.svetlov.server.service.pool.CommandRepositoryProvider;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
@@ -14,6 +14,7 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,7 +34,7 @@ public class InMemoryCommandRepository implements CommandRepositoryProvider {
     }
 
     private void initMap() {
-        Path basePath = Paths.get("./cloud-server/src/main/java/ru/svetlov/server/service/command/handler");
+        Path basePath = Paths.get("./cloud-server/src/main/java/ru/svetlov/server/core/handler/command");
         List<Class<? extends CommandHandler>> classes = loadClasses(basePath);
         instantiateHandlers(classes);
     }
@@ -100,8 +101,10 @@ public class InMemoryCommandRepository implements CommandRepositoryProvider {
     private static Class<? extends CommandHandler> getCommandHandlerClasses(String className) {
         try {
             Class<? extends CommandHandler> aClass = Class.forName(className).asSubclass(CommandHandler.class);
-            if (aClass.isAnnotationPresent(ACommandHandler.class))
+            if (aClass.isAnnotationPresent(ACommandHandler.class)) {
+                System.out.println(className + " added to map");
                 return aClass;
+            }
             System.out.printf("No annotation @ACommandHandler is found in: %s\n", className);
         } catch (ClassNotFoundException e) {
             System.out.println("class not found: " + e.getMessage());
@@ -116,6 +119,6 @@ public class InMemoryCommandRepository implements CommandRepositoryProvider {
         TestCommand command = new TestCommand();
         command.setParameters(new Object[]{1});
         System.out.println("command: " + command.getCommand());
-        Factory.getInstance().getCommandPool().getHandler(command).process(command);
+        Factory.getInstance().getCommandPool().getHandler(command).process(command, null);
     }
 }

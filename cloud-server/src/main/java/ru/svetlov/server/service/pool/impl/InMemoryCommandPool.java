@@ -1,9 +1,9 @@
-package ru.svetlov.server.service.command.pool.impl;
+package ru.svetlov.server.service.pool.impl;
 
 import ru.svetlov.domain.command.base.GenericCommand;
-import ru.svetlov.server.service.command.handler.CommandHandler;
-import ru.svetlov.server.service.command.pool.CommandPool;
-import ru.svetlov.server.service.command.pool.CommandRepositoryProvider;
+import ru.svetlov.server.core.handler.command.CommandHandler;
+import ru.svetlov.server.service.pool.CommandPool;
+import ru.svetlov.server.service.pool.CommandRepositoryProvider;
 
 import java.util.Map;
 
@@ -20,8 +20,8 @@ public class InMemoryCommandPool implements CommandPool {
         if (command.getCommand().isEmpty())
             throw new IllegalArgumentException("Command name can't be empty");
         CommandHandler result = handlers.get(command.getCommand());
-        if (result == null)
-            throw new RuntimeException("Command " + command.getCommand() + " not found");
+//        if (result == null)
+//            throw new RuntimeException("Command " + command.getCommand() + " not found");
         return result;
     }
 }

@@ -12,6 +12,8 @@ import io.netty.handler.codec.serialization.ObjectEncoder;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
 import ru.svetlov.server.core.handler.inbound.*;
+import ru.svetlov.server.factory.Factory;
+import ru.svetlov.server.service.jdbc.AuthenticationProvider;
 
 public class NettyCoreServer implements CloudServerService {
 
@@ -50,9 +52,11 @@ public class NettyCoreServer implements CloudServerService {
                             socketChannel.pipeline().addLast(
                                     new ObjectEncoder(),
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
-                                    new AuthorizationInboundHandler(),
-                                    new EchoService()
-                            ).addLast(eventExecutors, new AuthenticationHandler());
+                                    new AuthorizationInboundHandler()
+//                                    new InboundRequestHandler(Factory.getInstance().getCommandPool())
+                            ).addLast(eventExecutors,
+                                    new AuthenticationHandler(getAuthenticationProvider())
+                            );
                         }
                     });
             ChannelFuture future = bootstrap.bind(8189).sync();
@@ -66,7 +70,10 @@ public class NettyCoreServer implements CloudServerService {
             eventExecutors.shutdownGracefully();
             System.out.println("Сервер остановлен");
         }
+    }
 
-
+    private AuthenticationProvider getAuthenticationProvider() {
+        return (AuthenticationProvider) Factory.getInstance().getService(AuthenticationProvider.class)
+                .orElseThrow(() -> new IllegalArgumentException("Can't locate AuthenticationProvider service"));
     }
 }

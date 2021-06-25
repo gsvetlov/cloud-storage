@@ -8,18 +8,17 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import ru.svetlov.domain.command.FileListRequest;
+import ru.svetlov.domain.command.LoginReply;
 import ru.svetlov.domain.command.LoginRequest;
-import ru.svetlov.domain.command.TestRequest;
 import ru.svetlov.domain.command.base.ReplyCommand;
-import ru.svetlov.domain.command.base.RequestCommand;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Random;
 
-public class NettyCommTest {
-
+public class CloudCommandTest {
     private static final String HOST = "localhost";
     private static final int PORT = 8189;
 
@@ -47,7 +46,7 @@ public class NettyCommTest {
             ChannelFuture future = bootstrap.connect(HOST, PORT).sync();
             System.out.println("Клиент запущен");
             readInput(future.channel());
-            sendCommands(future.channel());
+            sendCommand(future.channel());
             future.channel().closeFuture().sync();
         } catch (Exception e) {
             System.out.println("Клиент останавливается с ошибкой " + e.getMessage());
@@ -77,36 +76,21 @@ public class NettyCommTest {
         }
     }
 
-    private static class SendCommandService extends ChannelOutboundHandlerAdapter{
-        @Override
-        public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-            super.write(ctx, msg, promise);
-        }
-    }
-
-    private static class GetCommandService extends SimpleChannelInboundHandler<ReplyCommand>{
+    private static class GetCommandService extends SimpleChannelInboundHandler<ReplyCommand> {
 
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, ReplyCommand rep) throws Exception {
             System.out.println("Reply received");
-//            if (replyCommand instanceof LoginRequiredReply){
-//                LoginRequiredReply rep = (LoginRequiredReply)replyCommand;
-//                StringBuilder sb = new StringBuilder(rep.getCommand());
-//                sb.append(" request Id: ").append(rep.getRequestId())
-//                        .append("; replyId: ").append(rep.getReplyId()).append("\n")
-//                        .append(rep.getParameters()[0]).append("\n");
-//                System.out.println(sb);
-//                return;
-//            }
-
             StringBuilder sb = new StringBuilder(rep.getCommand());
             sb.append(" request Id: ").append(rep.getRequestId())
-                    .append("; replyId: ").append(rep.getReplyId()).append("\n")
-                    .append(rep.getParameters()[0]).append("\n");
+                    .append("; replyId: ").append(rep.getReplyId()).append("\n");
+            for (Object o : rep.getParameters()) {
+                sb.append(o).append("\n");
+                if (o instanceof String){
+                    loginOk = ((String) o).contains("\"success\":true");
+                }
+            }
             System.out.println(sb);
-
-            //System.out.println("Unrecognized command");
-            //ctx.fireChannelRead(replyCommand);
         }
     }
 
@@ -129,33 +113,18 @@ public class NettyCommTest {
         }).start();
     }
 
-    public static void main(String[] args) {
-        NettyCommTest nettyCommTest = new NettyCommTest();
-        nettyCommTest.startClient();
-    }
-
     private int pid = (new Random()).nextInt(100) + 100;
 
-    private void sendCommands(Channel channel) {
-//        for (int i = 0; i < 40; i++) {
-//            GenericCommand testCommand = new TestCommand();
-//            testCommand.setParameters(new Object[]{pid + i});
-//            channel.writeAndFlush(testCommand);
-//            sleep(200);
-//        }
-        sleep(5000);
-        for (int i = 1; i < 4; i++) {
-            RequestCommand genericRequest = new TestRequest(i, "GenericRequest", new Object[]{pid + i});
-            channel.writeAndFlush(genericRequest);
-            sleep(500);
-        }
-        for (int i = 1; i < 4; i++) {
-            LoginRequest l = new LoginRequest(100 + i, "me", "mySecretPass");
-            channel.writeAndFlush(l);
+    private static boolean loginOk;
+
+    private void sendCommand(Channel channel) {
+        FileListRequest listRequest = new FileListRequest(pid, "temp");
+        LoginRequest loginRequest = new LoginRequest(pid, "me", "mySecretPass");
+        while (!loginOk) {
+            channel.writeAndFlush(loginRequest);
             sleep(1000);
         }
-        //sleep(5000);
-        //channel.writeAndFlush("exit");
+        channel.writeAndFlush(listRequest);
     }
 
     private void sleep(int millis) {
@@ -164,5 +133,10 @@ public class NettyCommTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        CloudCommandTest commandTest = new CloudCommandTest();
+        commandTest.startClient();
     }
 }
