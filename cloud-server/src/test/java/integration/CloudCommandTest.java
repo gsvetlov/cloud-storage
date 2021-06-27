@@ -1,6 +1,7 @@
 package integration;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.buffer.*;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
@@ -8,14 +9,19 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
-import ru.svetlov.domain.command.FileListRequest;
-import ru.svetlov.domain.command.LoginReply;
-import ru.svetlov.domain.command.LoginRequest;
+import io.netty.handler.stream.ChunkedFile;
+import io.netty.handler.stream.ChunkedNioFile;
+import io.netty.handler.stream.ChunkedWriteHandler;
+import io.netty.util.ReferenceCountUtil;
+import io.netty.util.ReferenceCounted;
+import ru.svetlov.domain.command.*;
 import ru.svetlov.domain.command.base.ReplyCommand;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.channels.FileChannel;
+import java.nio.file.*;
 import java.util.Random;
 
 public class CloudCommandTest {
@@ -86,7 +92,7 @@ public class CloudCommandTest {
                     .append("; replyId: ").append(rep.getReplyId()).append("\n");
             for (Object o : rep.getParameters()) {
                 sb.append(o).append("\n");
-                if (o instanceof String){
+                if (o instanceof String) {
                     loginOk = ((String) o).contains("\"success\":true");
                 }
             }
@@ -113,18 +119,129 @@ public class CloudCommandTest {
         }).start();
     }
 
-    private int pid = (new Random()).nextInt(100) + 100;
+    private int pid = (new Random()).nextInt(900) + 100;
 
     private static boolean loginOk;
+    private static boolean canProceed;
 
     private void sendCommand(Channel channel) {
+        //listRequest(channel);
+        loginSequence(channel);
+        UploadRequest rq = new UploadRequest(pid, "./upload", "background" + pid + ".png", 817042);
+        channel.writeAndFlush(rq);
+        sleep(1000);
+        byte[] file = readFileBytes("C:\\temp\\temp\\StarGame-res\\background01.png");
+        UploadReply rp = new UploadReply(2, rq.getRequestId(), file);
+        System.out.println("sending file...");
+        channel.writeAndFlush(rp);
+        sleep(2000);
+        UploadRequest rq2 = new UploadRequest(pid * 2 + 1, "./upload", "gdx-texturepacker.jar", 7773477);
+        channel.writeAndFlush(rq2);
+        sleep(1000);
+
+//        canProceed = false;
+//        UploadChunksRequest rqChunks = new UploadChunksRequest(
+//                pid * 2 + 2,
+//                "./upload",
+//                "gdx-texturepacker" + pid + ".jar",
+//                7773477,
+//                50_000);
+//        channel.writeAndFlush(rqChunks);
+//        sleep(3000);
+//        System.out.println("sending file...");
+//
+//        sendChunks(channel, Paths.get("C:\\temp\\temp\\StarGame-res\\gdx-texturepacker.jar"), 50_000);
+//        System.out.println("done...");
+//        while (!canProceed) {
+//            sleep(1000);
+//        }
+//        ;
+        canProceed = false;
+        UploadChunksRequest bigChunks = new UploadChunksRequest(
+                pid * 3 + 3,
+                "./upload",
+                "CentOS-8.3.2011-x86_64-dvd1" + pid + ".iso",
+                9264168960L,
+                1_000_000);
+        sleep(3000);
+        System.out.println("sending big file...");
+        sendChunks(channel, Paths.get("C:\\vm\\iso\\CentOS-8.3.2011-x86_64-dvd1.iso"), 1_000_000);
+        while (!canProceed) {
+            sleep(1000);
+        }
+        ;
+        System.out.println("done...");
+        sleep(3000);
+    }
+    //C:\vm\iso\CentOS-8.3.2011-x86_64-dvd1.iso
+
+    private byte[] readFileBytes(String path) {
+        try {
+            return Files.readAllBytes(Paths.get(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private void sendChunks(Channel channel, Path path, int buffSize) {
+        ChunkedNioFile file = getFile(path, buffSize);
+        if (file == null) return;
+        System.out.println("replacing pipeline");
+        channel.pipeline().addFirst(new ChunkedWriteHandler());
+        channel.pipeline().remove(ObjectEncoder.class);
+        ByteBuf buffer = null;
+        try {
+            System.out.println("sending...");
+            ChannelFuture future = channel.writeAndFlush(new ChunkedFile(path.toFile(), buffSize));
+//            while (file.isEndOfInput()) {
+//                buffer = file.readChunk(ByteBufAllocator.DEFAULT);
+//                System.out.println("buffer have :" + buffer.readableBytes());
+//                channel.writeAndFlush(buffer);
+            future.addListener((ChannelFutureListener) channelFuture -> restorePipeline(channel));
+//            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        } finally {
+            if (buffer != null) {
+                buffer.release();
+            }
+        }
+
+    }
+
+    private void restorePipeline(Channel channel) {
+        System.out.println("transfer done");
+        channel.pipeline().remove(ChunkedWriteHandler.class);
+        channel.pipeline().addFirst(new ObjectEncoder());
+        canProceed = true;
+        System.out.println("restoring pipeline");
+    }
+
+    private ChunkedNioFile getFile(Path path, int buffSize) {
+        try {
+            FileChannel channel = FileChannel.open(path, StandardOpenOption.READ);
+            return new ChunkedNioFile(channel, buffSize);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void listRequest(Channel channel) {
         FileListRequest listRequest = new FileListRequest(pid, "temp");
+        loginSequence(channel);
+        channel.writeAndFlush(listRequest);
+    }
+
+    private void loginSequence(Channel channel) {
         LoginRequest loginRequest = new LoginRequest(pid, "me", "mySecretPass");
         while (!loginOk) {
             channel.writeAndFlush(loginRequest);
             sleep(1000);
         }
-        channel.writeAndFlush(listRequest);
     }
 
     private void sleep(int millis) {

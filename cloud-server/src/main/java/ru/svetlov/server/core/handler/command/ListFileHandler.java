@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import ru.svetlov.domain.command.FileListRequest;
 import ru.svetlov.domain.command.FileListUpdateReply;
+import ru.svetlov.domain.command.base.Commands;
 import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
 import ru.svetlov.domain.file.FileStructureInfo;
@@ -13,7 +14,7 @@ import ru.svetlov.server.service.json.JsonMapProvider;
 
 import java.util.List;
 
-@ACommandHandler(command = "list_files")
+@ACommandHandler(command = Commands.LIST_FILES)
 public class ListFileHandler implements CommandHandler {
 
     private final FileInfoProvider provider;

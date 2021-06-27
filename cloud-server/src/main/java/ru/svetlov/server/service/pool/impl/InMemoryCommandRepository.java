@@ -61,8 +61,10 @@ public class InMemoryCommandRepository implements CommandRepositoryProvider {
             } else {
                 handler = (CommandHandler) constructor.newInstance();
             }
+            System.out.println("Handler instance created: " + handler);
             return handler;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            System.out.println("Handler creation failed");
             System.out.println(e.getMessage());
         }
         return null;
