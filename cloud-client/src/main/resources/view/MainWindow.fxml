@@ -8,7 +8,7 @@
 <center>
     <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <TreeView fx:id="leftTreeView" prefHeight="Infinity" prefWidth="200.0" />
-        <TreeTableView fx:id="rightTreeTableView" prefHeight="Infinity" prefWidth="200.0" />
+        <TreeTableView prefHeight="Infinity" prefWidth="200.0" />
     </SplitPane>
 </center>
 <top>
@@ -30,13 +30,13 @@
     </VBox>
 </top>
 <bottom>
-    <TilePane tileAlignment="CENTER">
+    <TilePane>
         <Text text="Text" />
 
         <Text text="Text" />
 
         <ProgressBar progress="0.10"/>
-        <Text fx:id="timeText"/>
+        <Text text="timeText"/>
 
     </TilePane>
 </bottom>
