@@ -22,6 +22,8 @@ import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CommandRouter implements RemoteStorage {
     private final static int REPLY_TIMEOUT = 10000;
@@ -109,9 +111,9 @@ public class CommandRouter implements RemoteStorage {
                 requests.remove(reply.getRequestId());
                 ObjectReader reader = mapper.reader();
                 try {
-                    List<FileStructureInfo> result = Arrays.asList(mapper.readValue(
-                            (String)reply.getParameters()[1],
-                            FileStructureInfo[].class));
+                    List<FileStructureInfo> result = Stream
+                            .of(reader.readValue((String) reply.getParameters()[1], FileStructureInfo[].class))
+                            .collect(Collectors.toCollection(LinkedList::new));
                     return result;
                 } catch ( IOException e) {
                     return Collections.emptyList();

@@ -5,5 +5,5 @@ import ru.svetlov.domain.file.FileStructureInfo;
 import java.util.List;
 
 public interface FileInfoProvider {
-    List<FileStructureInfo> getPath(String... path);
+    List<FileStructureInfo> getPath(String path, String rootPath);
 }

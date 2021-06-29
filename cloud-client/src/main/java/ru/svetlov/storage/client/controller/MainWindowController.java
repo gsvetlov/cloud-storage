@@ -58,8 +58,9 @@ public class MainWindowController implements Initializable {
             hasLogin = msg.equals("Login successful");
             if (!hasLogin)
                 alertUser(msg);
+            else
+                initRemoteView(remoteFileView);
             setView();
-            initRemoteView(remoteFileView);
         });
     }
 
@@ -137,9 +138,9 @@ public class MainWindowController implements Initializable {
     }
 
     private void addTreeItem(TreeItem<FileStructureInfo> item, List<FileStructureInfo> listView) {
+        for (TreeItem<FileStructureInfo> child : item.getChildren())
+            listView.remove(child.getValue());
         Platform.runLater(() -> {
-            for (TreeItem<FileStructureInfo> child : item.getChildren())
-                listView.remove(child.getValue());
             for (int i = 1; i < listView.size(); i++)
                 item.getChildren().add(new TreeItem<>(listView.get(i)));
             item.setExpanded(true);

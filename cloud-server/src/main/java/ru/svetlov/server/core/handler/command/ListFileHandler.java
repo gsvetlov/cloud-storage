@@ -29,7 +29,7 @@ public class ListFileHandler implements CommandHandler {
     public GenericCommand process(GenericCommand command, UserContext context) {
         FileListRequest listRequest = ((FileListRequest) command);
         String path = ((String) listRequest.getParameters()[0]);
-        List<FileStructureInfo> info = provider.getPath(context.getRootPath(), path);
+        List<FileStructureInfo> info = provider.getPath(path, context.getRootPath());
 
         return new FileListUpdateReply(1, listRequest.getRequestId(), path, infoToJsonString(info));
     }
