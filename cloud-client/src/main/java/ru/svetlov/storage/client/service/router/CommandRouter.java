@@ -1,19 +1,14 @@
 package ru.svetlov.storage.client.service.router;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import ru.svetlov.domain.command.FileListRequest;
-import ru.svetlov.domain.command.LoginReply;
 import ru.svetlov.domain.command.LoginRequest;
-import ru.svetlov.domain.command.LoginRequiredReply;
 import ru.svetlov.domain.command.base.Commands;
 import ru.svetlov.domain.command.base.ReplyCommand;
-import ru.svetlov.domain.command.base.RequestCommand;
 import ru.svetlov.domain.file.FileStructureInfo;
-import ru.svetlov.storage.client.common.Callback;
 import ru.svetlov.storage.client.service.adapter.RemoteStorage;
 import ru.svetlov.storage.client.service.network.NetworkClient;
 
@@ -24,6 +19,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+/***
+ * Этому классу нужна декомпозиция и рефакторинг методов
+ */
 
 public class CommandRouter implements RemoteStorage {
     private final static int REPLY_TIMEOUT = 10000;

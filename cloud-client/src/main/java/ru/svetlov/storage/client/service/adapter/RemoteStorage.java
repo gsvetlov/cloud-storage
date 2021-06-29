@@ -11,8 +11,6 @@ public interface RemoteStorage {
     void disconnect();
     RemoteOperationResult login(String username, String password);
     List<FileStructureInfo> listFiles(String path);
-
     RemoteOperationResult postFile(FileStructureInfo file);
-
     RemoteOperationResult getFile(FileStructureInfo file);
 }

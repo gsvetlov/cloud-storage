@@ -4,6 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+/***
+ * синглтон маппер для json
+ */
+
 public class JsonMapProvider {
     private final static Object _lock = new Object();
     private static volatile JsonMapProvider _instance;

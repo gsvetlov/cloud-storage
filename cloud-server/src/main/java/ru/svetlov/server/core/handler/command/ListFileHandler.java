@@ -35,7 +35,7 @@ public class ListFileHandler implements CommandHandler {
     }
 
     private String infoToJsonString(List<FileStructureInfo> info){
-        String result = null;
+        String result;
         try {
             result =  writer.writeValueAsString(info);
         } catch (JsonProcessingException e) {

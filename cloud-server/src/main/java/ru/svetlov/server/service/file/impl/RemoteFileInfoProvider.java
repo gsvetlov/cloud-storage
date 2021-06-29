@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class DebugFileInfoProvider implements FileInfoProvider {
+public class RemoteFileInfoProvider implements FileInfoProvider {
     private final List<FileStructureInfo> files = new ArrayList<>();
 
     @Override
@@ -29,7 +29,6 @@ public class DebugFileInfoProvider implements FileInfoProvider {
                         @Override
                         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                             Path parent = dir.getRoot() == null ? null : rootPath.relativize(dir.getParent());
-                            //if (parent.toString().equals("")) parent= Paths.get(".");
                             Path filename = dir.getFileName();
                             register(parent, filename, FileType.DIRECTORY, attrs);
                             return FileVisitResult.CONTINUE;
@@ -38,7 +37,6 @@ public class DebugFileInfoProvider implements FileInfoProvider {
                         @Override
                         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                             Path parent = rootPath.relativize(file.getParent());
-                            //if (parent.toString().equals("")) parent= Paths.get(".");
                             register(parent, file.getFileName(), getFileType(attrs), attrs);
                             return FileVisitResult.CONTINUE;
                         }

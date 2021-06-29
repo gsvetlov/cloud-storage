@@ -2,12 +2,12 @@ package integration;
 
 import ru.svetlov.domain.file.FileStructureInfo;
 import ru.svetlov.storage.client.service.file.FileViewService;
-import ru.svetlov.storage.client.service.file.impl.TestFileService;
+import ru.svetlov.storage.client.service.file.impl.LocalFileService;
 
 public class TestFileServiceTest {
     private static FileViewService service;
     public static void main(String[] args) {
-        service = new TestFileService();
+        service = new LocalFileService();
         service.getListView("c:/java").forEach(TestFileServiceTest::displayViewObject);
     }
 

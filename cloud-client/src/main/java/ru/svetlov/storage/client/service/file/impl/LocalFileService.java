@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class TestFileService implements FileViewService {
+public class LocalFileService implements FileViewService {
     private static final int PATH_DEPTH = 1;
     private final List<FileStructureInfo> files = new ArrayList<>();
 

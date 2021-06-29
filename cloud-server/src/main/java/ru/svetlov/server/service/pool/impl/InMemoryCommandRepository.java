@@ -14,7 +14,6 @@ import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLOutput;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,7 @@ public class InMemoryCommandRepository implements CommandRepositoryProvider {
     }
 
     private void initMap() {
-        Path basePath = Paths.get("./cloud-server/src/main/java/ru/svetlov/server/core/handler/command");
+        Path basePath = Paths.get("./cloud-server/src/main/java/ru/svetlov/server/core/handler/command"); // TODO: заменить на конфиг
         List<Class<? extends CommandHandler>> classes = loadClasses(basePath);
         instantiateHandlers(classes);
     }
@@ -104,19 +103,19 @@ public class InMemoryCommandRepository implements CommandRepositoryProvider {
         try {
             Class<? extends CommandHandler> aClass = Class.forName(className).asSubclass(CommandHandler.class);
             if (aClass.isAnnotationPresent(ACommandHandler.class)) {
-                System.out.println(className + " added to map");
+                System.out.println(className + " added to map"); // TODO: в лог
                 return aClass;
             }
-            System.out.printf("No annotation @ACommandHandler is found in: %s\n", className);
+            System.out.printf("No annotation @ACommandHandler is found in: %s\n", className); // TODO: в лог
         } catch (ClassNotFoundException e) {
-            System.out.println("class not found: " + e.getMessage());
+            System.out.println("class not found: " + e.getMessage()); // TODO: в лог
         } catch (ClassCastException e) {
-            System.out.printf("Class %s is not a CommandHandler: \n", e.getMessage());
+            System.out.printf("Class %s is not a CommandHandler: \n", e.getMessage()); // TODO: в лог
         }
         return null;
     }
 
-    // TODO: debug purposes ONLY!
+    // TODO: убрать после дебага
     public static void main(String[] args) {
         TestCommand command = new TestCommand();
         command.setParameters(new Object[]{1});

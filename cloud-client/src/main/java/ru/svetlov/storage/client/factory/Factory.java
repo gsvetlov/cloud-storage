@@ -4,14 +4,14 @@ import ru.svetlov.storage.client.controller.CloudClient;
 import ru.svetlov.storage.client.service.adapter.CloudClientAdapter;
 import ru.svetlov.storage.client.service.adapter.RemoteStorage;
 import ru.svetlov.storage.client.service.file.FileViewService;
-import ru.svetlov.storage.client.service.file.impl.TestFileService;
+import ru.svetlov.storage.client.service.file.impl.LocalFileService;
 import ru.svetlov.storage.client.service.network.NetworkClient;
 import ru.svetlov.storage.client.service.network.impl.NetClient;
 import ru.svetlov.storage.client.service.router.CommandRouter;
 
 public class Factory {
     public static FileViewService getLocalStorage() {
-        return new TestFileService();
+        return new LocalFileService();
     }
 
     public static NetworkClient getNetworkClient() {

@@ -17,8 +17,6 @@ import java.io.IOException;
 
 public class NetClient implements NetworkClient {
 
-    private String host;
-    private int port;
     private boolean connected;
     private final Bootstrap bootstrap = new Bootstrap();
     private Callback<ReplyCommand> replyHandler;
@@ -49,8 +47,6 @@ public class NetClient implements NetworkClient {
     @Override
     public boolean connect(String host, int port) throws IOException {
         if (connected) return true;
-        this.host = host;
-        this.port = port;
         try {
             future = bootstrap.connect(host, port).sync();
             System.out.println("Клиент запущен");
@@ -58,6 +54,7 @@ public class NetClient implements NetworkClient {
             connected = false;
             System.out.println("Клиент останавливается с ошибкой " + e.getMessage());
             disconnect();
+            throw new IOException(e);
         }
         connected = future.channel().isOpen();
         return connected;
@@ -91,7 +88,7 @@ public class NetClient implements NetworkClient {
     private class InboundReplyHandler extends SimpleChannelInboundHandler<ReplyCommand> {
 
         @Override
-        protected void channelRead0(ChannelHandlerContext channelHandlerContext, ReplyCommand replyCommand) throws Exception {
+        protected void channelRead0(ChannelHandlerContext channelHandlerContext, ReplyCommand replyCommand) {
             replyHandler.call(replyCommand);
         }
     }
