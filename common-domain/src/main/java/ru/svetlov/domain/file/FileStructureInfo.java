@@ -1,9 +1,8 @@
 package ru.svetlov.domain.file;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.nio.file.attribute.FileTime;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -17,15 +16,16 @@ import java.util.List;
  */
 
 @Data
+@NoArgsConstructor
 public class FileStructureInfo {
-    private final String parent;
-    private final String filename;
-    private final FileType type;
+    private String parent;
+    private String filename;
+    private FileType type;
     private List<FileStructureInfo> children;
-    private final long size;
-    private final String lastModified;
+    private long size;
+    private String lastModified;
 
-    public FileStructureInfo(String parent, String filename, FileType type, long size, FileTime lastModified) {
+    public FileStructureInfo(String parent, String filename, FileType type, long size, String lastModified) {
         this.parent = parent;
         this.filename = filename;
         this.type = type;
@@ -34,7 +34,7 @@ public class FileStructureInfo {
     }
 
     public void setChildren(List<FileStructureInfo> descendants) {
-        if (type != FileType.DIRECTORY) throw new IllegalArgumentException("only directories can have descendants");
+        //if (type != FileType.DIRECTORY) throw new IllegalArgumentException("only directories can have descendants");
         this.children = descendants;
     }
 }

@@ -3,6 +3,9 @@ package ru.svetlov.server.service.jdbc.impl;
 import ru.svetlov.server.service.jdbc.AuthenticationProvider;
 import ru.svetlov.server.service.jdbc.AuthenticationResult;
 
+/***
+ * Имитируем проверку в базе. Первый логин всегда неудачный, второй - удачный
+ */
 public class StubAuthenticationProvider implements AuthenticationProvider {
     private int loginFailureCounter;
 

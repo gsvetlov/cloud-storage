@@ -139,23 +139,21 @@ public class CloudCommandTest {
         channel.writeAndFlush(rq2);
         sleep(1000);
 
-//        canProceed = false;
-//        UploadChunksRequest rqChunks = new UploadChunksRequest(
-//                pid * 2 + 2,
-//                "./upload",
-//                "gdx-texturepacker" + pid + ".jar",
-//                7773477,
-//                50_000);
-//        channel.writeAndFlush(rqChunks);
-//        sleep(3000);
-//        System.out.println("sending file...");
-//
-//        sendChunks(channel, Paths.get("C:\\temp\\temp\\StarGame-res\\gdx-texturepacker.jar"), 50_000);
-//        System.out.println("done...");
-//        while (!canProceed) {
-//            sleep(1000);
-//        }
-//        ;
+        canProceed = false;
+        UploadChunksRequest rqChunks = new UploadChunksRequest(
+                pid * 2 + 2,
+                "./upload",
+                "gdx-texturepacker" + pid + ".jar",
+                7773477,
+                50_000);
+        channel.writeAndFlush(rqChunks);
+        sleep(3000);
+        System.out.println("sending file...");
+
+        sendChunks(channel, Paths.get("C:\\temp\\temp\\StarGame-res\\gdx-texturepacker.jar"), 50_000);
+        System.out.println("done...");
+        while (!canProceed)
+            sleep(1000);
         canProceed = false;
         UploadChunksRequest bigChunks = new UploadChunksRequest(
                 pid * 3 + 3,
@@ -164,16 +162,16 @@ public class CloudCommandTest {
                 9264168960L,
                 1_000_000);
         sleep(3000);
-        System.out.println("sending big file...");
-        sendChunks(channel, Paths.get("C:\\vm\\iso\\CentOS-8.3.2011-x86_64-dvd1.iso"), 1_000_000);
-        while (!canProceed) {
-            sleep(1000);
-        }
-        ;
-        System.out.println("done...");
-        sleep(3000);
+
+        //C:\vm\iso\CentOS-8.3.2011-x86_64-dvd1.iso  - size: 9Gb
+//        System.out.println("sending big file...");
+//        sendChunks(channel, Paths.get("C:\\vm\\iso\\CentOS-8.3.2011-x86_64-dvd1.iso"), 1_000_000);
+//        while (!canProceed)
+//            sleep(1000);
+//        System.out.println("done...");
+//        sleep(3000);
     }
-    //C:\vm\iso\CentOS-8.3.2011-x86_64-dvd1.iso
+
 
     private byte[] readFileBytes(String path) {
         try {
@@ -194,11 +192,11 @@ public class CloudCommandTest {
         try {
             System.out.println("sending...");
             ChannelFuture future = channel.writeAndFlush(new ChunkedFile(path.toFile(), buffSize));
+            future.addListener((ChannelFutureListener) channelFuture -> restorePipeline(channel));
 //            while (file.isEndOfInput()) {
 //                buffer = file.readChunk(ByteBufAllocator.DEFAULT);
 //                System.out.println("buffer have :" + buffer.readableBytes());
 //                channel.writeAndFlush(buffer);
-            future.addListener((ChannelFutureListener) channelFuture -> restorePipeline(channel));
 //            }
 
         } catch (Exception e) {

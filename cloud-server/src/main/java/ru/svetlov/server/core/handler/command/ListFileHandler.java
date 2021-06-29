@@ -29,13 +29,13 @@ public class ListFileHandler implements CommandHandler {
     public GenericCommand process(GenericCommand command, UserContext context) {
         FileListRequest listRequest = ((FileListRequest) command);
         String path = ((String) listRequest.getParameters()[0]);
-        List<FileStructureInfo> info = provider.getPath(context.getRootPath(), path);
+        List<FileStructureInfo> info = provider.getPath(path, context.getRootPath());
 
         return new FileListUpdateReply(1, listRequest.getRequestId(), path, infoToJsonString(info));
     }
 
     private String infoToJsonString(List<FileStructureInfo> info){
-        String result = null;
+        String result;
         try {
             result =  writer.writeValueAsString(info);
         } catch (JsonProcessingException e) {

@@ -11,36 +11,24 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-public class DebugFileInfoProvider implements FileInfoProvider {
-    @Override
-    public List<FileStructureInfo> getPath(String... path) {
-        StringBuilder sb = new StringBuilder();
-        for (String s : path)
-            sb.append(s);
-        return getListView(sb.toString());
-    }
-
+public class RemoteFileInfoProvider implements FileInfoProvider {
     private final List<FileStructureInfo> files = new ArrayList<>();
 
-    public List<FileStructureInfo> getListView(Path path) {
+    @Override
+    public List<FileStructureInfo> getPath(String path, String rootPath) {
         files.clear();
-        getPathObjects(path);
+        getPathObjects(Paths.get(rootPath, path).normalize(), Paths.get(rootPath));
         return files;
     }
 
-
-    public List<FileStructureInfo> getListView(String path) {
-        return getListView(Paths.get(path));
-    }
-
-    private void getPathObjects(Path path) {
+    private void getPathObjects(Path path, Path rootPath) {
         try {
             Files.walkFileTree(
                     path, EnumSet.noneOf(FileVisitOption.class), 1,
                     new FileVisitor<Path>() {
                         @Override
                         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
-                            Path parent = dir.getRoot() == null ? null : dir.getParent();
+                            Path parent = dir.getRoot() == null ? null : rootPath.relativize(dir.getParent());
                             Path filename = dir.getFileName();
                             register(parent, filename, FileType.DIRECTORY, attrs);
                             return FileVisitResult.CONTINUE;
@@ -48,7 +36,8 @@ public class DebugFileInfoProvider implements FileInfoProvider {
 
                         @Override
                         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
-                            register(file.getParent(), file.getFileName(), getFileType(attrs), attrs);
+                            Path parent = rootPath.relativize(file.getParent());
+                            register(parent, file.getFileName(), getFileType(attrs), attrs);
                             return FileVisitResult.CONTINUE;
                         }
 
@@ -80,6 +69,6 @@ public class DebugFileInfoProvider implements FileInfoProvider {
                 (filename == null) ? "" : filename.toString(),
                 type,
                 attr.size(),
-                attr.lastModifiedTime()));
+                attr.lastModifiedTime().toString()));
     }
 }

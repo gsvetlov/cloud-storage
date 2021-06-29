@@ -21,12 +21,12 @@ public class AuthenticationHandler extends SimpleChannelInboundHandler<LoginRequ
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, LoginRequest command) throws Exception {
-        Object[] parameters = command.getParameters(); // TODO: replace with safe and validated data
+        Object[] parameters = command.getParameters(); // TODO: нужна валидация
         String login = (String) parameters[0];
         String pass = (String) parameters[1];
         AuthenticationResult authenticate = service.authenticate(login, pass);
         if (authenticate.isSuccess()) {
-            ctx.pipeline().replace(AuthorizationInboundHandler.class,
+            ctx.pipeline().replace(AuthorizationInboundHandler.class, // TODO: убрать в конфигуратор пайплайна
                     "",
                     new InboundRequestHandler(Factory.getInstance().getCommandPool()));
             ctx.pipeline().remove(AuthenticationHandler.class);

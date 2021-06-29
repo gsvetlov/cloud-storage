@@ -53,7 +53,7 @@ public class NettyCoreServer implements CloudServerService {
                                     new ObjectEncoder(),
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
                                     new AuthorizationInboundHandler()
-//                                    new InboundRequestHandler(Factory.getInstance().getCommandPool())
+//                                    new InboundRequestHandler(Factory.getInstance().getCommandPool()) // TODO: добавить класс-конфигуратор пайплайна
                             ).addLast(eventExecutors,
                                     new AuthenticationHandler(getAuthenticationProvider())
                             );

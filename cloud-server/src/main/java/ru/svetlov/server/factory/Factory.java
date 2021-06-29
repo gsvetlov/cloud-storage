@@ -4,7 +4,7 @@ import ru.svetlov.server.core.CloudServerService;
 import ru.svetlov.server.core.NettyCoreServer;
 import ru.svetlov.server.service.file.FileInfoProvider;
 import ru.svetlov.server.service.file.FileUploader;
-import ru.svetlov.server.service.file.impl.DebugFileInfoProvider;
+import ru.svetlov.server.service.file.impl.RemoteFileInfoProvider;
 import ru.svetlov.server.service.file.impl.DebugFileUploader;
 import ru.svetlov.server.service.pool.CommandPool;
 import ru.svetlov.server.service.pool.CommandRepositoryProvider;
@@ -45,7 +45,7 @@ public class Factory implements ServiceLocator {
         services.put(TestEntityRepository.class, new StubDataRepository());
         services.put(AuthenticationProvider.class, new StubAuthenticationProvider());
         services.put(JsonMapProvider.class, JsonMapProvider.getInstance());
-        services.put(FileInfoProvider.class, new DebugFileInfoProvider());
+        services.put(FileInfoProvider.class, new RemoteFileInfoProvider());
         services.put(FileUploader.class, new DebugFileUploader());
         services.put(CommandRepositoryProvider.class, new InMemoryCommandRepository(this));
         services.put(CommandPool.class, new InMemoryCommandPool(this.getCommandRepositoryProvider()));

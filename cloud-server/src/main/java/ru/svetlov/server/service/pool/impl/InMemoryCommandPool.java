@@ -19,9 +19,6 @@ public class InMemoryCommandPool implements CommandPool {
     public CommandHandler getHandler(GenericCommand command) {
         if (command.getCommand().isEmpty())
             throw new IllegalArgumentException("Command name can't be empty");
-        CommandHandler result = handlers.get(command.getCommand());
-//        if (result == null)
-//            throw new RuntimeException("Command " + command.getCommand() + " not found");
-        return result;
+        return handlers.get(command.getCommand());
     }
 }

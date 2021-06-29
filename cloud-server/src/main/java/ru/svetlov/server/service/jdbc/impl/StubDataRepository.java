@@ -7,6 +7,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+/***
+ * заглушка репозитория
+ */
+
 public class StubDataRepository implements TestEntityRepository {
     private static Random random = new Random();
 
@@ -32,11 +36,7 @@ public class StubDataRepository implements TestEntityRepository {
 
     @Override
     public TestEntity get(int id) {
-//        try {
-//            Thread.sleep(random.nextInt(10) + 10);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+
         return new TestEntity(id, "StubDataQuery " + id + " complete");
     }
 

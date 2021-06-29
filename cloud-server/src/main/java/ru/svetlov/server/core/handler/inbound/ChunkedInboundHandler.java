@@ -33,7 +33,7 @@ public class ChunkedInboundHandler extends ChannelInboundHandlerAdapter {
         printReport(bytesReceived);
         if (bytesReceived < request.getFileSize()) return;
         System.out.println("restoring pipeline");
-        ctx.pipeline().addFirst(new ObjectDecoder(ClassResolvers.cacheDisabled(null)));
+        ctx.pipeline().addFirst(new ObjectDecoder(ClassResolvers.cacheDisabled(null))); // TODO: убрать в конфигуратор пайплайна
         ctx.pipeline().remove(ChunkedWriteHandler.class);
         ctx.pipeline().replace(ChunkedInboundHandler.class, "", new InboundRequestHandler(Factory.getInstance().getCommandPool()));
     }
