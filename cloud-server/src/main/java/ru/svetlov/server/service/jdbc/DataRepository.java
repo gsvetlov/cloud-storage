@@ -1,4 +1,4 @@
-package ru.svetlov.server.service;
+package ru.svetlov.server.service.jdbc;
 
 import ru.svetlov.domain.entity.Entity;
 

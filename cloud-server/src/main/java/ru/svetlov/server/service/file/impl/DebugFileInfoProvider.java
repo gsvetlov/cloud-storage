@@ -80,6 +80,6 @@ public class DebugFileInfoProvider implements FileInfoProvider {
                 (filename == null) ? "" : filename.toString(),
                 type,
                 attr.size(),
-                attr.lastModifiedTime()));
+                attr.lastModifiedTime().toString()));
     }
 }

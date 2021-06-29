@@ -16,7 +16,7 @@ public class MainApp extends Application {
         primaryStage.setTitle("Cloud-storage client");
         primaryStage.setResizable(true);
         MainWindowController controller = loader.getController();
-        primaryStage.setOnCloseRequest((event) -> controller.shutdown());
+        primaryStage.setOnCloseRequest(controller::shutdown);
         primaryStage.show();
     }
 }
