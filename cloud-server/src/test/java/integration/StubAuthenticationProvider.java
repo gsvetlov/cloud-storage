@@ -16,10 +16,10 @@ public class StubAuthenticationProvider implements AuthenticationProvider {
             return new AuthenticationResult(
                     true,
                     "Login successful",
-                    loginFailureCounter, null);
+                    null);
         return new AuthenticationResult(
                 false,
                 "Login failed due to stubAuthenticationProvider",
-                loginFailureCounter, "c:/temp");
+                "c:/temp");
     }
 }

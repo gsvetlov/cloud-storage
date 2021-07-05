@@ -28,10 +28,8 @@ public class MainWindowController implements Initializable {
 
     @FXML
     Button loginButton, uploadButton, downloadButton;
-
     @FXML
     TreeView<FileStructureInfo> localFileView, remoteFileView;
-
     @FXML
     TextField host, port, username, password;
     @FXML
@@ -56,7 +54,7 @@ public class MainWindowController implements Initializable {
 
     private void processLogin(String msg) {
         Platform.runLater(()->{
-            hasLogin = msg.equals("Login successful");
+            hasLogin = msg.equals("login_successful");
             if (!hasLogin)
                 alertUser(msg);
             else

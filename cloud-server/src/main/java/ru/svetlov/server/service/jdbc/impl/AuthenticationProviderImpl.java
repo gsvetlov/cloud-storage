@@ -3,8 +3,6 @@ package ru.svetlov.server.service.jdbc.impl;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.postgresql.ds.PGConnectionPoolDataSource;
-import org.postgresql.ds.PGPoolingDataSource;
 import ru.svetlov.server.service.configuration.impl.Configuration;
 import ru.svetlov.server.service.jdbc.AuthenticationProvider;
 import ru.svetlov.server.service.jdbc.domain.AuthenticationResult;
@@ -31,7 +29,6 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
     private void connect() {
         try {
             connection = DriverManager.getConnection(connectionString, login, password);
-
             log.debug("Connected");
             log.trace(connection);
         } catch (SQLException e) {
@@ -41,7 +38,8 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
 
     private void prepareStatement() {
         try {
-            statement = connection.prepareStatement("select home_dir from users where user_name=? and user_password=? limit 1");
+            statement = connection.prepareStatement(
+                    "select home_dir from users where user_name=? and user_password=? limit 1");
         } catch (SQLException e) {
             log.throwing(e);
         }
@@ -63,35 +61,40 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
 
     @Override
     public synchronized AuthenticationResult authenticate(String login, String password) {
-        boolean isSuccess = false;
-        String rootPath = null;
-        String reason = "Login successful";
-        long token = 0;
+        AuthenticationResult result;
         try {
-            prepareStatement(login, password);
-            QueryResult result = queryUserRootPath();
-            rootPath = result.getPath();
-            isSuccess = rootPath != null;
-            if (!isSuccess && result.getReason() == null) {
-                reason = "user/login incorrect";
-            }
-            if (!isSuccess && result.getReason() != null)
-                reason = result.getReason();
+            setupQuery(login, password);
+
+            QueryResult query = runQuery();
+
+            result = processQueryResult(query);
+
         } catch (IllegalArgumentException e) {
             log.throwing(e);
-            reason = e.getMessage();
+            result = AuthenticationResult.Fail(e.getMessage());
         }
-
-        AuthenticationResult authenticationResult = new AuthenticationResult(isSuccess, reason, 0, rootPath);
-        log.debug(authenticationResult);
-        return authenticationResult;
+        log.debug(result);
+        return result;
     }
 
-    private QueryResult queryUserRootPath() {
+    private void setupQuery(String login, String password) throws IllegalArgumentException {
+        try {
+            statement.setString(1, login);
+            statement.setString(2, password);
+        } catch (SQLException e) {
+            log.throwing(e);
+            throw new IllegalArgumentException("Statement arguments are not valid");
+        }
+    }
+
+    private QueryResult runQuery() {
         QueryResult result = new QueryResult();
         try (ResultSet rs = statement.executeQuery()) {
             if (rs.next()) {
-                result.setPath(rs.getString(1));            }
+                result.setPath(rs.getString(1));
+            } else {
+                result.setReason("user/login incorrect");
+            }
         } catch (SQLException e) {
             log.throwing(e);
             result.setReason(e.getMessage());
@@ -99,15 +102,13 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
         return result;
     }
 
-    private void prepareStatement(String login, String password) throws IllegalArgumentException {
-        try {
-            statement.setString(1, login);
-            statement.setString(2, password);
-        } catch (SQLException e) {
-            log.throwing(e);
-            throw new IllegalArgumentException("Statement arguments not valid");
-        }
+    private AuthenticationResult processQueryResult(QueryResult query) {
+        String reason = query.getReason() == null ? "login_successful" : query.getReason();
+        String rootPath = query.getPath();
+        boolean isSuccess = rootPath != null;
+        return new AuthenticationResult(isSuccess, reason, rootPath);
     }
+
     @Data
     private static class QueryResult{
         public String path;

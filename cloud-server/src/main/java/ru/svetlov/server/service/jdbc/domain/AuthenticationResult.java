@@ -8,6 +8,13 @@ import lombok.Data;
 public class AuthenticationResult {
     private boolean isSuccess;
     private String reason;
-    private long token;
     private String rootPath;
+
+    public static AuthenticationResult Fail() {
+        return new AuthenticationResult(false, null, null);
+    }
+
+    public static AuthenticationResult Fail(String reason) {
+        return new AuthenticationResult(false, reason, null);
+    }
 }
