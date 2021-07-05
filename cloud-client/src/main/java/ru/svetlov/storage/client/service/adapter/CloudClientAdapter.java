@@ -3,11 +3,11 @@ package ru.svetlov.storage.client.service.adapter;
 import javafx.scene.control.TreeItem;
 import ru.svetlov.domain.file.FileStructureInfo;
 import ru.svetlov.storage.client.common.Callback;
-import ru.svetlov.storage.client.common.Callback2;
-import ru.svetlov.storage.client.controller.CloudClient;
+import ru.svetlov.storage.client.common.BiCallback;
 import ru.svetlov.storage.client.service.file.FileViewService;
 import ru.svetlov.domain.file.FileType;
 import ru.svetlov.storage.client.service.router.RemoteOperationResult;
+import ru.svetlov.storage.client.service.router.RemoteStorageService;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -18,13 +18,13 @@ public class CloudClientAdapter implements CloudClient {
     private Callback<String> loginHandler;
     private Callback<String> uploadHandler;
     private Callback<String> downloadHandler;
-    private Callback2<TreeItem<FileStructureInfo>, List<FileStructureInfo>> remoteListHandler;
-    private Callback2<TreeItem<FileStructureInfo>, List<FileStructureInfo>> localListHandler;
+    private BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> remoteListHandler;
+    private BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> localListHandler;
 
     private final FileViewService localView;
-    private final RemoteStorage remoteStorage;
+    private final RemoteStorageService remoteStorage;
 
-    public CloudClientAdapter(FileViewService localView, RemoteStorage remoteStorage) {
+    public CloudClientAdapter(FileViewService localView, RemoteStorageService remoteStorage) {
         this.localView = localView;
         this.remoteStorage = remoteStorage;
     }
@@ -61,9 +61,11 @@ public class CloudClientAdapter implements CloudClient {
     private void listDirectory(TreeItem<FileStructureInfo> item, boolean remote) {
         FileType type = item.getValue().getType();
         if (type != FileType.DIRECTORY) return;
+
         String parent = item.getValue().getParent();
         String filename = item.getValue().getFilename();
         Path path = parent == null ? Paths.get(filename) : Paths.get(parent, filename).normalize();
+
         if (remote && remoteListHandler != null)
             remoteListHandler.call(item, remoteStorage.listFiles(path.toString()));
         if (!remote && localListHandler != null)
@@ -100,12 +102,12 @@ public class CloudClientAdapter implements CloudClient {
     }
 
     @Override
-    public void setListLocalDirectoryEventHandler(Callback2<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback) {
+    public void setListLocalDirectoryEventHandler(BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback) {
         this.localListHandler = callback;
     }
 
     @Override
-    public void setListRemoteDirectoryEventHandler(Callback2<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback) {
+    public void setListRemoteDirectoryEventHandler(BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback) {
         this.remoteListHandler = callback;
     }
 

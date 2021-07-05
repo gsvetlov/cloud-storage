@@ -10,6 +10,7 @@ import javafx.stage.WindowEvent;
 import ru.svetlov.domain.file.FileStructureInfo;
 import ru.svetlov.storage.client.factory.Factory;
 import ru.svetlov.domain.file.FileType;
+import ru.svetlov.storage.client.service.adapter.CloudClient;
 
 import java.net.URL;
 import java.util.List;

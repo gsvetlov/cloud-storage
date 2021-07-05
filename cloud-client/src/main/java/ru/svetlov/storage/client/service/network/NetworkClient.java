@@ -11,4 +11,5 @@ public interface NetworkClient {
     void disconnect();
     void post(RequestCommand command);
     void setReplyHandler(Callback<ReplyCommand> callback);
+    void postRequest(RequestCommand request, Callback<ReplyCommand> replyCallback);
 }

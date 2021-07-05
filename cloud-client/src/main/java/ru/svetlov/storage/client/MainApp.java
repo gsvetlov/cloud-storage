@@ -35,7 +35,7 @@ public class MainApp extends Application {
     }
 
     private void loadProperties() {
-        try (InputStream in = MainApp.class.getClassLoader().getResourceAsStream("client.properties")) {
+        try (InputStream in = MainApp.class.getResourceAsStream("/client.properties")) {
             properties = new Properties();
             properties.load(in);
             log.trace("properties loaded");

@@ -4,12 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.svetlov.domain.command.FileListRequest;
 import ru.svetlov.domain.command.LoginRequest;
 import ru.svetlov.domain.command.base.Commands;
 import ru.svetlov.domain.command.base.ReplyCommand;
 import ru.svetlov.domain.file.FileStructureInfo;
-import ru.svetlov.storage.client.service.adapter.RemoteStorage;
 import ru.svetlov.storage.client.service.network.NetworkClient;
 
 import java.io.IOException;
@@ -20,11 +22,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/***
- * Этому классу нужна декомпозиция и рефакторинг методов
- */
+// TODO: Этому классу нужна декомпозиция и рефакторинг методов
 
-public class CommandRouter implements RemoteStorage {
+public class CommandRouterService implements RemoteStorageService {
+    private final static Logger log = LogManager.getLogger();
+
     private final static int REPLY_TIMEOUT = 10000;
     private final static ObjectMapper mapper = new ObjectMapper();
     private int requestId;
@@ -33,13 +35,13 @@ public class CommandRouter implements RemoteStorage {
 
     private final BlockingQueue<ReplyCommand> replies = new LinkedBlockingQueue<>();
 
-    public CommandRouter(NetworkClient network) {
+    public CommandRouterService(NetworkClient network) {
         this.network = network;
         network.setReplyHandler(this::postReply);
         requests = new HashMap<>();
     }
 
-    private synchronized int getId() {
+    private synchronized int getNewRequestId() {
         return ++requestId;
     }
 
@@ -56,7 +58,7 @@ public class CommandRouter implements RemoteStorage {
 
     @Override
     public RemoteOperationResult login(String username, String password) {
-        int id = getId();
+        int id = getNewRequestId();
         LoginRequest loginRequest = new LoginRequest(id, username, password);
         requests.put(id, 0);
         network.post(loginRequest);
@@ -83,6 +85,7 @@ public class CommandRouter implements RemoteStorage {
         try {
             return replies.poll(REPLY_TIMEOUT, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
+            log.throwing(Level.ERROR, e);
             return null;
         }
     }
@@ -94,7 +97,7 @@ public class CommandRouter implements RemoteStorage {
 
     @Override
     public List<FileStructureInfo> listFiles(String path) {
-        int id = getId();
+        int id = getNewRequestId();
         FileListRequest listRequest = new FileListRequest(id, path);
         requests.put(id,0);
         network.post(listRequest);
