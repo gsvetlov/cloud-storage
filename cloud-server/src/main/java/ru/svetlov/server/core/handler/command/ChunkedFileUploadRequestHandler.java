@@ -12,12 +12,12 @@ import ru.svetlov.domain.command.base.annotations.ACommandHandler;
 import ru.svetlov.server.core.common.UserContext;
 import ru.svetlov.server.core.handler.inbound.ChunkedInboundHandler;
 import ru.svetlov.server.core.handler.inbound.InboundRequestHandler;
-import ru.svetlov.server.service.file.FileUploader;
+import ru.svetlov.server.service.file.FileUploadService;
 
 @ACommandHandler(command = Commands.REQUEST_UPLOAD_CHUNKS)
 public class ChunkedFileUploadRequestHandler implements CommandHandler{
-    private FileUploader uploader;
-    public ChunkedFileUploadRequestHandler(FileUploader uploader){
+    private FileUploadService uploader;
+    public ChunkedFileUploadRequestHandler(FileUploadService uploader){
         this.uploader = uploader;
     }
     @Override

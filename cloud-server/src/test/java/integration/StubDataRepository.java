@@ -1,7 +1,7 @@
-package ru.svetlov.server.service.jdbc.impl;
+package integration;
 
 import ru.svetlov.domain.entity.TestEntity;
-import ru.svetlov.server.service.jdbc.TestEntityRepository;
+import ru.svetlov.server.service.jdbc.DataRepository;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Random;
  * заглушка репозитория
  */
 
-public class StubDataRepository implements TestEntityRepository {
+public class StubDataRepository implements DataRepository<TestEntity> {
     private static Random random = new Random();
 
     @Override

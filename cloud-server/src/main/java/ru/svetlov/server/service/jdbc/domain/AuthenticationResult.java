@@ -1,4 +1,4 @@
-package ru.svetlov.server.service.jdbc;
+package ru.svetlov.server.service.jdbc.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,4 +9,5 @@ public class AuthenticationResult {
     private boolean isSuccess;
     private String reason;
     private long token;
+    private String rootPath;
 }

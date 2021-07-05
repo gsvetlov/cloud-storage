@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.svetlov.server.core.common.UserContext;
-import ru.svetlov.server.service.file.FileUploader;
+import ru.svetlov.server.service.file.FileUploadService;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DebugFileUploader implements FileUploader {
+public class FileUploadServiceImpl implements FileUploadService {
     private final Map<UserContext, List<FileUploadTask>> userTaskMap = new HashMap<>();
 
     @Override

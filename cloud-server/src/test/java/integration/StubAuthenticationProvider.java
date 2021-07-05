@@ -1,7 +1,7 @@
-package ru.svetlov.server.service.jdbc.impl;
+package integration;
 
 import ru.svetlov.server.service.jdbc.AuthenticationProvider;
-import ru.svetlov.server.service.jdbc.AuthenticationResult;
+import ru.svetlov.server.service.jdbc.domain.AuthenticationResult;
 
 /***
  * Имитируем проверку в базе. Первый логин всегда неудачный, второй - удачный
@@ -16,10 +16,10 @@ public class StubAuthenticationProvider implements AuthenticationProvider {
             return new AuthenticationResult(
                     true,
                     "Login successful",
-                    loginFailureCounter);
+                    loginFailureCounter, null);
         return new AuthenticationResult(
                 false,
                 "Login failed due to stubAuthenticationProvider",
-                loginFailureCounter);
+                loginFailureCounter, "c:/temp");
     }
 }

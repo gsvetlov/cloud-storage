@@ -7,7 +7,7 @@ import ru.svetlov.domain.command.LoginReply;
 import ru.svetlov.domain.command.LoginRequest;
 import ru.svetlov.server.factory.Factory;
 import ru.svetlov.server.service.jdbc.AuthenticationProvider;
-import ru.svetlov.server.service.jdbc.AuthenticationResult;
+import ru.svetlov.server.service.jdbc.domain.AuthenticationResult;
 
 
 public class AuthenticationHandler extends SimpleChannelInboundHandler<LoginRequest> {

@@ -5,7 +5,7 @@ import ru.svetlov.domain.command.base.Commands;
 import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
 import ru.svetlov.server.core.common.UserContext;
-import ru.svetlov.server.service.file.FileUploader;
+import ru.svetlov.server.service.file.FileUploadService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,10 +13,10 @@ import java.util.Map;
 @ACommandHandler(command = Commands.REPLY_UPLOAD_FILE)
 public class FileUploadHandler implements CommandHandler {
     private static final int RETRY_COUNT = 3;
-    private final FileUploader uploadHandler;
+    private final FileUploadService uploadHandler;
     private final Map<UserContext, Map<Integer, Integer>> retriesMap;
 
-    public FileUploadHandler(FileUploader uploader) {
+    public FileUploadHandler(FileUploadService uploader) {
         this.uploadHandler = uploader;
         retriesMap = new HashMap<>();
     }
