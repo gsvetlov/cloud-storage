@@ -3,6 +3,8 @@ package integration;
 import ru.svetlov.server.service.jdbc.AuthenticationProvider;
 import ru.svetlov.server.service.jdbc.domain.AuthenticationResult;
 
+import java.sql.SQLException;
+
 /***
  * Имитируем проверку в базе. Первый логин всегда неудачный, второй - удачный
  */
@@ -21,5 +23,15 @@ public class StubAuthenticationProvider implements AuthenticationProvider {
                 false,
                 "Login failed due to stubAuthenticationProvider",
                 "c:/temp");
+    }
+
+    @Override
+    public void connect() throws SQLException {
+
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }

@@ -10,7 +10,7 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.svetlov.domain.command.UploadChunksRequest;
-import ru.svetlov.server.core.common.UserContext;
+import ru.svetlov.server.core.domain.UserContext;
 import ru.svetlov.server.factory.Factory;
 import ru.svetlov.server.service.file.FileUploadService;
 

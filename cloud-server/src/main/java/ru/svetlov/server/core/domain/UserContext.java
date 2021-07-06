@@ -1,4 +1,4 @@
-package ru.svetlov.server.core.common;
+package ru.svetlov.server.core.domain;
 
 import io.netty.channel.ChannelHandlerContext;
 import lombok.AllArgsConstructor;

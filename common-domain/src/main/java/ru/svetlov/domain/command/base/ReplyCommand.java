@@ -4,11 +4,8 @@ import lombok.Getter;
 
 @Getter
 public abstract class ReplyCommand extends RequestCommand {
-    protected int replyId;
-
-    public ReplyCommand(int replyId, int requestId, String command, Object[] parameters) {
+    public ReplyCommand(int requestId, CommandType command, Object[] parameters) {
         super(requestId, command, parameters);
-        this.replyId = replyId;
     }
 
 }

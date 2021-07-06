@@ -3,7 +3,7 @@ package ru.svetlov.server.service.jdbc.impl;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import ru.svetlov.server.service.configuration.impl.Configuration;
+import ru.svetlov.server.service.configuration.Configuration;
 import ru.svetlov.server.service.jdbc.AuthenticationProvider;
 import ru.svetlov.server.service.jdbc.domain.AuthenticationResult;
 
@@ -22,27 +22,19 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
         connectionString = configuration.get("connection");
         login = configuration.get("user");
         password = configuration.get("password");
-        connect();
+    }
+
+    public void connect() throws SQLException {
+        connection = DriverManager.getConnection(connectionString, login, password);
         prepareStatement();
+
+        log.debug("Connected");
+        log.trace(connection);
     }
 
-    private void connect() {
-        try {
-            connection = DriverManager.getConnection(connectionString, login, password);
-            log.debug("Connected");
-            log.trace(connection);
-        } catch (SQLException e) {
-            log.throwing(e);
-        }
-    }
-
-    private void prepareStatement() {
-        try {
-            statement = connection.prepareStatement(
-                    "select home_dir from users where user_name=? and user_password=? limit 1");
-        } catch (SQLException e) {
-            log.throwing(e);
-        }
+    private void prepareStatement() throws SQLException {
+        statement = connection.prepareStatement(
+                "select home_dir from users where user_name=? and user_password=? limit 1");
     }
 
     public void shutdown() {
@@ -110,7 +102,7 @@ public class AuthenticationProviderImpl implements AuthenticationProvider {
     }
 
     @Data
-    private static class QueryResult{
+    private static class QueryResult {
         public String path;
         public String reason;
     }

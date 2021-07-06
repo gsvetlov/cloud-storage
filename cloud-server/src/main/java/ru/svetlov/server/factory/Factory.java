@@ -1,8 +1,8 @@
 package ru.svetlov.server.factory;
 
 import ru.svetlov.server.core.CloudServerService;
-import ru.svetlov.server.core.NettyCoreServer;
-import ru.svetlov.server.service.configuration.impl.Configuration;
+import ru.svetlov.server.core.impl.NettyCoreServer;
+import ru.svetlov.server.service.configuration.Configuration;
 import ru.svetlov.server.service.configuration.impl.ServerConfiguration;
 import ru.svetlov.server.service.file.FileInfoProvider;
 import ru.svetlov.server.service.file.FileUploadService;

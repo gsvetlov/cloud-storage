@@ -1,6 +1,6 @@
 package ru.svetlov.server.service.file;
 
-import ru.svetlov.server.core.common.UserContext;
+import ru.svetlov.server.core.domain.UserContext;
 
 public interface FileUploadService {
     boolean prepare(UserContext context, int requestId, String path, String filename, long fileSize);

@@ -99,24 +99,10 @@ public class NetClient implements NetworkClient {
 
     private class InboundReplyHandler extends ChannelInboundHandlerAdapter {
 
-//        @Override
-//        protected void channelRead0(ChannelHandlerContext channelHandlerContext, ReplyCommand replyCommand) {
-//            log.trace(channelHandlerContext);
-//            log.trace(replyCommand);
-//            replyHandler.call(replyCommand);
-//        }
-
         @Override
         public void channelRead(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
             log.trace(o);
             replyHandler.call((ReplyCommand)o);
-        }
-
-        @Override
-        public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-            log.trace("read complete");
-            log.trace(ctx);
-            super.channelReadComplete(ctx);
         }
 
         @Override

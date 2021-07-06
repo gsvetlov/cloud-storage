@@ -1,4 +1,4 @@
-package ru.svetlov.server.core;
+package ru.svetlov.server.core.impl;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -16,9 +16,10 @@ import io.netty.util.concurrent.EventExecutorGroup;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.svetlov.server.core.CloudServerService;
 import ru.svetlov.server.core.handler.inbound.*;
 import ru.svetlov.server.factory.Factory;
-import ru.svetlov.server.service.jdbc.AuthenticationProvider;
+import ru.svetlov.server.service.configuration.Configuration;
 
 public class NettyCoreServer implements CloudServerService {
     private static final Logger log = LogManager.getLogger();
@@ -33,8 +34,10 @@ public class NettyCoreServer implements CloudServerService {
     }
 
     private NettyCoreServer() {
+        configuration = Factory.getInstance().getConfiguration();
     }
 
+    private final Configuration configuration;
     private NioEventLoopGroup bossGroup;
     private NioEventLoopGroup workerGroup;
     private EventExecutorGroup eventExecutors;
@@ -55,25 +58,36 @@ public class NettyCoreServer implements CloudServerService {
                         protected void initChannel(SocketChannel socketChannel) {
                             socketChannel.pipeline().addLast(
                                     new LoggingHandler("nettyLogger", LogLevel.TRACE),
+                                    new DefaultExceptionHandler(),
                                     new ObjectEncoder(),
                                     new ObjectDecoder(ClassResolvers.cacheDisabled(null)),
                                     new AuthorizationInboundHandler()
 //                                    new InboundRequestHandler(Factory.getInstance().getCommandPool()) // TODO: добавить класс-конфигуратор пайплайна
                             ).addLast(eventExecutors,
                                     new AuthenticationHandler(Factory.getInstance().getAuthenticationProvider())
+
                             );
                         }
                     });
-            ChannelFuture future = bootstrap.bind(8189).sync();
+            ChannelFuture future = bootstrap.bind(getPort()).sync();
             log.info("Сервер запущен");
             future.channel().closeFuture().sync();
         } catch (Exception e) {
-            log.throwing(Level.ERROR,e);
+            log.throwing(Level.ERROR, e);
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
             eventExecutors.shutdownGracefully();
             log.info("Сервер остановлен");
+        }
+    }
+
+    private int getPort() {
+        try {
+            return Integer.parseInt(configuration.get("port"));
+        } catch (NumberFormatException e) {
+            log.throwing(e);
+            throw e;
         }
     }
 }

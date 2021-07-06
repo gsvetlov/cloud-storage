@@ -6,7 +6,7 @@ import lombok.Getter;
 public abstract class RequestCommand extends GenericCommand {
     protected int requestId;
 
-    public RequestCommand(int requestId, String command, Object[] parameters) {
+    public RequestCommand(int requestId, CommandType command, Object[] parameters) {
         super(command, parameters);
         this.requestId = requestId;
     }

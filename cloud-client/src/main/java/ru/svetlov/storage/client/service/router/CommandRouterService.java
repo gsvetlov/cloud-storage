@@ -9,7 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.svetlov.domain.command.FileListRequest;
 import ru.svetlov.domain.command.LoginRequest;
-import ru.svetlov.domain.command.base.Commands;
+import ru.svetlov.domain.command.base.CommandType;
 import ru.svetlov.domain.command.base.ReplyCommand;
 import ru.svetlov.domain.file.FileStructureInfo;
 import ru.svetlov.storage.client.service.network.NetworkClient;
@@ -65,8 +65,8 @@ public class CommandRouterService implements RemoteStorageService {
         while (true) {
             ReplyCommand reply = pollReply();
             if (reply == null) return new RemoteOperationResult(false, "Operation timeout");
-            if (reply.getCommand().equals(Commands.REQUEST_PROCESSING)) continue;
-            if (reply.getCommand().equals(Commands.LOGIN_REPLY)) {
+            if (reply.getCommand().equals(CommandType.REQUEST_PROCESSING)) continue;
+            if (reply.getCommand().equals(CommandType.LOGIN_REPLY)) {
                 requests.remove(reply.getRequestId());
                 ObjectReader reader = mapper.reader();
                 try {
@@ -104,12 +104,12 @@ public class CommandRouterService implements RemoteStorageService {
         while (true) {
             ReplyCommand reply = pollReply();
             if (reply == null) return Collections.emptyList();
-            if (reply.getCommand().equals(Commands.REQUEST_PROCESSING)) continue;
-            if (reply.getCommand().equals(Commands.INVALID_REQUEST)){
+            if (reply.getCommand().equals(CommandType.REQUEST_PROCESSING)) continue;
+            if (reply.getCommand().equals(CommandType.INVALID_REQUEST)){
                 requests.remove(reply.getRequestId());
                 return Collections.emptyList();
             }
-            if (reply.getCommand().equals(Commands.LIST_FILES_UPDATE)) {
+            if (reply.getCommand().equals(CommandType.LIST_FILES_UPDATE)) {
                 requests.remove(reply.getRequestId());
                 ObjectReader reader = mapper.reader();
                 try {

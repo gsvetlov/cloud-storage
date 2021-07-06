@@ -3,7 +3,7 @@ package ru.svetlov.server.service.file.impl;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import ru.svetlov.server.core.common.UserContext;
+import ru.svetlov.server.core.domain.UserContext;
 import ru.svetlov.server.service.file.FileUploadService;
 
 import java.io.IOException;

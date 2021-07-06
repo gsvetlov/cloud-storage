@@ -2,12 +2,13 @@ package ru.svetlov.server.service.configuration.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import ru.svetlov.server.service.configuration.Configuration;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class ServerConfiguration implements Configuration{
+public class ServerConfiguration implements Configuration {
     private static final Logger log = LogManager.getLogger();
     private static final ServerConfiguration instance;
     private static Properties properties;

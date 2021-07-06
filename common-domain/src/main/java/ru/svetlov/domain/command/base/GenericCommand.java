@@ -10,6 +10,6 @@ import java.io.Serializable;
 @Setter
 @AllArgsConstructor
 public abstract class GenericCommand implements Serializable {
-    protected String command;
+    protected CommandType command;
     protected Object[] parameters;
 }

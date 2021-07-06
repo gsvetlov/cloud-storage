@@ -1,5 +1,6 @@
 package ru.svetlov.server.service.pool.impl;
 
+import ru.svetlov.domain.command.base.CommandType;
 import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.server.core.handler.command.CommandHandler;
 import ru.svetlov.server.service.pool.CommandPool;
@@ -17,8 +18,8 @@ public class InMemoryCommandPool implements CommandPool {
 
     @Override
     public CommandHandler getHandler(GenericCommand command) {
-        if (command.getCommand().isEmpty())
-            throw new IllegalArgumentException("Command name can't be empty");
-        return handlers.get(command.getCommand());
+        if (command.getCommand().equals(CommandType.UNKNOWN))
+            throw new IllegalArgumentException("Invalid command type");
+        return handlers.get(command.getCommand().asString());
     }
 }

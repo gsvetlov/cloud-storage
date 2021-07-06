@@ -3,15 +3,16 @@ package ru.svetlov.server.core.handler.command;
 import ru.svetlov.domain.command.RequestInvalidReply;
 import ru.svetlov.domain.command.UploadProceedReply;
 import ru.svetlov.domain.command.UploadRequest;
-import ru.svetlov.domain.command.base.Commands;
+import ru.svetlov.domain.command.base.CommandType;
 import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.domain.command.UploadChunksReply;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
-import ru.svetlov.server.core.common.UserContext;
+import ru.svetlov.server.core.domain.UserContext;
 import ru.svetlov.server.service.file.FileUploadService;
 
-@ACommandHandler(command = Commands.REQUEST_FILE_UPLOAD)
+@ACommandHandler(command = CommandType.REQUEST_FILE_UPLOAD)
 public class FileUploadRequestHandler implements CommandHandler {
+    private static final int MAX_OBJECT_SIZE = 1048500;
     private final FileUploadService uploadHandler;
 
     public FileUploadRequestHandler(FileUploadService uploader) {
@@ -25,10 +26,10 @@ public class FileUploadRequestHandler implements CommandHandler {
         String filename = (String) request.getParameters()[1];
         long size = (long) request.getParameters()[2];
 
-        if (size > 1048500) return new UploadChunksReply(1, request.getRequestId(), 1048500);
+        if (size > MAX_OBJECT_SIZE) return new UploadChunksReply(request.getRequestId(), MAX_OBJECT_SIZE);
 
         if (uploadHandler.prepare(context, request.getRequestId(), path, filename, size))
-            return new UploadProceedReply(1, request.getRequestId());
-        return new RequestInvalidReply(1, request.getRequestId());
+            return new UploadProceedReply(request.getRequestId());
+        return new RequestInvalidReply(request.getRequestId());
     }
 }

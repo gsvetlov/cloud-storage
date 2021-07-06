@@ -54,7 +54,7 @@ public class InMemoryCommandRepository implements CommandRepositoryProvider {
 
             CommandHandler handler = getHandlerInstance(constructors[0], parameters);
             if (handler != null)
-                map.put(aClass.getAnnotation(ACommandHandler.class).command(), handler);
+                map.put(aClass.getAnnotation(ACommandHandler.class).command().asString(), handler);
         }
     }
 

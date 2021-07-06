@@ -6,15 +6,15 @@ import io.netty.handler.stream.ChunkedWriteHandler;
 import ru.svetlov.domain.command.RequestInvalidReply;
 import ru.svetlov.domain.command.UploadChunksRequest;
 import ru.svetlov.domain.command.UploadProceedReply;
-import ru.svetlov.domain.command.base.Commands;
+import ru.svetlov.domain.command.base.CommandType;
 import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
-import ru.svetlov.server.core.common.UserContext;
+import ru.svetlov.server.core.domain.UserContext;
 import ru.svetlov.server.core.handler.inbound.ChunkedInboundHandler;
 import ru.svetlov.server.core.handler.inbound.InboundRequestHandler;
 import ru.svetlov.server.service.file.FileUploadService;
 
-@ACommandHandler(command = Commands.REQUEST_UPLOAD_CHUNKS)
+@ACommandHandler(command = CommandType.REQUEST_UPLOAD_CHUNKS)
 public class ChunkedFileUploadRequestHandler implements CommandHandler{
     private FileUploadService uploader;
     public ChunkedFileUploadRequestHandler(FileUploadService uploader){
@@ -28,9 +28,9 @@ public class ChunkedFileUploadRequestHandler implements CommandHandler{
         long size = (long) request.getParameters()[2];
         if (uploader.prepare(context, request.getRequestId(), path, filename, size)) {
             preparePipeline(context.getChannelHandlerContext(), context, request);
-            return new UploadProceedReply(1, request.getRequestId());
+            return new UploadProceedReply(request.getRequestId());
         }
-        return new RequestInvalidReply(1, request.getRequestId());
+        return new RequestInvalidReply(request.getRequestId());
     }
 
     private void preparePipeline(ChannelHandlerContext ctx, UserContext userContext, UploadChunksRequest request) {
