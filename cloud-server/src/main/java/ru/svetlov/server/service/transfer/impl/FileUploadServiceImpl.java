@@ -1,10 +1,10 @@
-package ru.svetlov.server.service.file.impl;
+package ru.svetlov.server.service.transfer.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import ru.svetlov.server.core.domain.UserContext;
-import ru.svetlov.server.service.file.FileUploadService;
+import ru.svetlov.server.service.transfer.FileUploadService;
 
 import java.io.IOException;
 import java.nio.file.*;

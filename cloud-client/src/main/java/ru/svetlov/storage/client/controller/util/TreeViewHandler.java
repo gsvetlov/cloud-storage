@@ -3,9 +3,7 @@ package ru.svetlov.storage.client.controller.util;
 import javafx.application.Platform;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import ru.svetlov.domain.file.FileStructureInfo;
-import ru.svetlov.storage.client.common.BiCallback;
-import ru.svetlov.storage.client.common.Callback;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
 
 import java.util.List;
 import java.util.function.Consumer;

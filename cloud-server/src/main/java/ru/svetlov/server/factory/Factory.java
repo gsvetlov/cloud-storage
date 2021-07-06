@@ -4,10 +4,10 @@ import ru.svetlov.server.core.CloudServerService;
 import ru.svetlov.server.core.impl.NettyCoreServer;
 import ru.svetlov.server.service.configuration.Configuration;
 import ru.svetlov.server.service.configuration.impl.ServerConfiguration;
-import ru.svetlov.server.service.file.FileInfoProvider;
-import ru.svetlov.server.service.file.FileUploadService;
-import ru.svetlov.server.service.file.impl.RemoteFileInfoProvider;
-import ru.svetlov.server.service.file.impl.FileUploadServiceImpl;
+import ru.svetlov.domain.service.viewer.FileInfoProvider;
+import ru.svetlov.server.service.transfer.FileUploadService;
+import ru.svetlov.server.service.viewer.impl.ServerFileInfoProvider;
+import ru.svetlov.server.service.transfer.impl.FileUploadServiceImpl;
 import ru.svetlov.server.service.jdbc.impl.AuthenticationProviderImpl;
 import ru.svetlov.server.service.pool.CommandPool;
 import ru.svetlov.server.service.pool.CommandRepositoryProvider;
@@ -45,7 +45,7 @@ public class Factory implements ServiceLocator {
 
         services.put(JsonMapProvider.class, JsonMapProvider.getInstance());
 
-        services.put(FileInfoProvider.class, new RemoteFileInfoProvider());
+        services.put(FileInfoProvider.class, new ServerFileInfoProvider());
 
         services.put(FileUploadService.class, new FileUploadServiceImpl());
 

@@ -1,12 +1,10 @@
 package ru.svetlov.storage.client.service.adapter.impl;
 
 import javafx.scene.control.TreeItem;
-import ru.svetlov.domain.file.FileStructureInfo;
-import ru.svetlov.storage.client.common.Callback;
-import ru.svetlov.storage.client.common.BiCallback;
+import ru.svetlov.domain.service.viewer.FileInfoProvider;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
 import ru.svetlov.storage.client.service.adapter.CloudClientService;
-import ru.svetlov.storage.client.service.file.FileViewService;
-import ru.svetlov.domain.file.FileType;
+import ru.svetlov.domain.service.viewer.domain.FileType;
 import ru.svetlov.storage.client.service.router.RemoteOperationResult;
 import ru.svetlov.storage.client.service.router.RemoteStorageService;
 
@@ -14,18 +12,20 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class CloudClientServiceAdapter implements CloudClientService {
-    private Callback<String> loginHandler;
-    private Callback<String> uploadHandler;
-    private Callback<String> downloadHandler;
-    private BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> remoteListHandler;
-    private BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> localListHandler;
+    private Consumer<String> loginHandler;
+    private Consumer<String> uploadHandler;
+    private Consumer<String> downloadHandler;
+    private BiConsumer<TreeItem<FileStructureInfo>, List<FileStructureInfo>> remoteListHandler;
+    private BiConsumer<TreeItem<FileStructureInfo>, List<FileStructureInfo>> localListHandler;
 
-    private final FileViewService localView;
+    private final FileInfoProvider localView;
     private final RemoteStorageService remoteStorage;
 
-    public CloudClientServiceAdapter(FileViewService localView, RemoteStorageService remoteStorage) {
+    public CloudClientServiceAdapter(FileInfoProvider localView, RemoteStorageService remoteStorage) {
         this.localView = localView;
         this.remoteStorage = remoteStorage;
     }
@@ -36,7 +36,7 @@ public class CloudClientServiceAdapter implements CloudClientService {
         if (result.isSuccess())
             result = remoteStorage.login(username, password);
         if (loginHandler != null)
-            loginHandler.call(result.getMessage());
+            loginHandler.accept(result.getMessage());
     }
 
     private RemoteOperationResult connect(String host, String port) {
@@ -68,47 +68,47 @@ public class CloudClientServiceAdapter implements CloudClientService {
         Path path = parent == null ? Paths.get(filename) : Paths.get(parent, filename).normalize();
 
         if (remote && remoteListHandler != null)
-            remoteListHandler.call(item, remoteStorage.listFiles(path.toString()));
+            remoteListHandler.accept(item, remoteStorage.listFiles(path.toString()));
         if (!remote && localListHandler != null)
-            localListHandler.call(item, localView.getListView(path));
+            localListHandler.accept(item, localView.getList(path.toString(), null));
     }
 
     @Override
     public void uploadFile(FileStructureInfo file) {
         RemoteOperationResult remoteOperationResult = remoteStorage.postFile(file);
         if (uploadHandler != null)
-            uploadHandler.call(remoteOperationResult.isSuccess() ? "ok" : remoteOperationResult.getMessage());
+            uploadHandler.accept(remoteOperationResult.isSuccess() ? "ok" : remoteOperationResult.getMessage());
     }
 
     @Override
     public void downloadFile(FileStructureInfo file) {
         RemoteOperationResult remoteOperationResult = remoteStorage.getFile(file);
         if (downloadHandler != null)
-            downloadHandler.call(remoteOperationResult.isSuccess() ? "ok" : remoteOperationResult.getMessage());
+            downloadHandler.accept(remoteOperationResult.isSuccess() ? "ok" : remoteOperationResult.getMessage());
     }
 
     @Override
-    public void setLoginEventHandler(Callback<String> callback) {
+    public void setLoginEventHandler(Consumer<String> callback) {
         this.loginHandler = callback;
     }
 
     @Override
-    public void setUploadEventHandler(Callback<String> callback) {
+    public void setUploadEventHandler(Consumer<String> callback) {
         this.uploadHandler = callback;
     }
 
     @Override
-    public void setDownloadEventHandler(Callback<String> callback) {
+    public void setDownloadEventHandler(Consumer<String> callback) {
         this.downloadHandler = callback;
     }
 
     @Override
-    public void setListLocalDirectoryEventHandler(BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback) {
+    public void setListLocalDirectoryEventHandler(BiConsumer<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback) {
         this.localListHandler = callback;
     }
 
     @Override
-    public void setListRemoteDirectoryEventHandler(BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback) {
+    public void setListRemoteDirectoryEventHandler(BiConsumer<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback) {
         this.remoteListHandler = callback;
     }
 

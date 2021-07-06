@@ -1,11 +1,11 @@
 package ru.svetlov.storage.client.service.adapter;
 
 import javafx.scene.control.TreeItem;
-import ru.svetlov.domain.file.FileStructureInfo;
-import ru.svetlov.storage.client.common.Callback;
-import ru.svetlov.storage.client.common.BiCallback;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
 
 import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public interface CloudClientService {
     void shutdown();
@@ -14,9 +14,9 @@ public interface CloudClientService {
     void uploadFile(FileStructureInfo file);
     void listRemote(TreeItem<FileStructureInfo> item);
     void downloadFile(FileStructureInfo file);
-    void setLoginEventHandler(Callback<String> callback);
-    void setUploadEventHandler(Callback<String> callback);
-    void setDownloadEventHandler(Callback<String> callback);
-    void setListLocalDirectoryEventHandler(BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback);
-    void setListRemoteDirectoryEventHandler(BiCallback<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback);
+    void setLoginEventHandler(Consumer<String> callback);
+    void setUploadEventHandler(Consumer<String> callback);
+    void setDownloadEventHandler(Consumer<String> callback);
+    void setListLocalDirectoryEventHandler(BiConsumer<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback);
+    void setListRemoteDirectoryEventHandler(BiConsumer<TreeItem<FileStructureInfo>, List<FileStructureInfo>> callback);
 }

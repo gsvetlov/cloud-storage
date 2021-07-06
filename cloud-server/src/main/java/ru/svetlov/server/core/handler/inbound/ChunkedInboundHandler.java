@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import ru.svetlov.domain.command.UploadChunksRequest;
 import ru.svetlov.server.core.domain.UserContext;
 import ru.svetlov.server.factory.Factory;
-import ru.svetlov.server.service.file.FileUploadService;
+import ru.svetlov.server.service.transfer.FileUploadService;
 
 public class ChunkedInboundHandler extends ChannelInboundHandlerAdapter {
     private static final Logger log = LogManager.getLogger();
@@ -40,7 +40,7 @@ public class ChunkedInboundHandler extends ChannelInboundHandlerAdapter {
         } finally {
             buf.release();
         }
-        printReport(bytesReceived);
+        logReport(bytesReceived);
         if (bytesReceived < request.getFileSize()) return;
 
         ctx.pipeline().addFirst(new ObjectDecoder(ClassResolvers.cacheDisabled(null))); // TODO: убрать в конфигуратор пайплайна
@@ -50,9 +50,9 @@ public class ChunkedInboundHandler extends ChannelInboundHandlerAdapter {
 
     private StringBuilder sb = new StringBuilder();
 
-    private void printReport(long bytesReceived) {
+    private void logReport(long bytesReceived) {
         sb.setLength(0);
         sb.append("Received: ").append(bytesReceived).append(" / ").append(request.getFileSize());
-        System.out.println(sb);
+        log.trace(sb.toString());
     }
 }

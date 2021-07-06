@@ -5,7 +5,7 @@ import ru.svetlov.domain.command.base.CommandType;
 import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
 import ru.svetlov.server.core.domain.UserContext;
-import ru.svetlov.server.service.file.FileUploadService;
+import ru.svetlov.server.service.transfer.FileUploadService;
 
 import java.util.HashMap;
 import java.util.Map;

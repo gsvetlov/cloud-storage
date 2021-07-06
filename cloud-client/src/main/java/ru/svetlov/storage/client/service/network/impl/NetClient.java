@@ -13,17 +13,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.svetlov.domain.command.base.ReplyCommand;
 import ru.svetlov.domain.command.base.RequestCommand;
-import ru.svetlov.storage.client.common.Callback;
 import ru.svetlov.storage.client.service.network.NetworkClient;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 public class NetClient implements NetworkClient {
     private static final Logger log = LogManager.getLogger();
 
     private boolean connected;
     private final Bootstrap bootstrap = new Bootstrap();
-    private Callback<ReplyCommand> replyHandler;
+    private Consumer<ReplyCommand> replyHandler;
     private ChannelFuture future;
     private NioEventLoopGroup loopGroup;
 
@@ -85,12 +85,12 @@ public class NetClient implements NetworkClient {
     }
 
     @Override
-    public void setReplyHandler(Callback<ReplyCommand> callback) {
+    public void setReplyHandler(Consumer<ReplyCommand> callback) {
         this.replyHandler = callback;
     }
 
     @Override
-    public void postRequest(RequestCommand request, Callback<ReplyCommand> replyCallback) {
+    public void postRequest(RequestCommand request, Consumer<ReplyCommand> replyCallback) {
         future.channel().writeAndFlush(request);
         log.trace(request);
         log.trace(replyCallback);
@@ -102,7 +102,7 @@ public class NetClient implements NetworkClient {
         @Override
         public void channelRead(ChannelHandlerContext channelHandlerContext, Object o) throws Exception {
             log.trace(o);
-            replyHandler.call((ReplyCommand)o);
+            replyHandler.accept((ReplyCommand)o);
         }
 
         @Override

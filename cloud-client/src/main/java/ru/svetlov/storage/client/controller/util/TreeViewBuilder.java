@@ -4,8 +4,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import ru.svetlov.domain.file.FileStructureInfo;
-import ru.svetlov.domain.file.FileType;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
+import ru.svetlov.domain.service.viewer.domain.FileType;
 
 import java.util.function.Consumer;
 

@@ -1,4 +1,4 @@
-package ru.svetlov.server.service.file;
+package ru.svetlov.server.service.transfer;
 
 import ru.svetlov.server.core.domain.UserContext;
 

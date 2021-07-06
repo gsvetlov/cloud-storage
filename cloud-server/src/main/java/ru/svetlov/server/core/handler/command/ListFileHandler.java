@@ -7,9 +7,9 @@ import ru.svetlov.domain.command.FileListUpdateReply;
 import ru.svetlov.domain.command.base.CommandType;
 import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
-import ru.svetlov.domain.file.FileStructureInfo;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
 import ru.svetlov.server.core.domain.UserContext;
-import ru.svetlov.server.service.file.FileInfoProvider;
+import ru.svetlov.domain.service.viewer.FileInfoProvider;
 import ru.svetlov.server.service.json.JsonMapProvider;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public class ListFileHandler implements CommandHandler {
     public GenericCommand process(GenericCommand command, UserContext context) {
         FileListRequest listRequest = ((FileListRequest) command);
         String path = ((String) listRequest.getParameters()[0]);
-        List<FileStructureInfo> info = provider.getPath(path, context.getRootPath());
+        List<FileStructureInfo> info = provider.getList(path, context.getRootPath());
 
         return new FileListUpdateReply(listRequest.getRequestId(), path, infoToJsonString(info));
     }

@@ -1,4 +1,4 @@
-package ru.svetlov.domain.file;
+package ru.svetlov.domain.service.viewer.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +9,7 @@ import java.util.List;
  * Класс для передачи объектов файловой системы.
  * <p>{@code parent} - элемент родитель
  * <p>{@code filename} - имя файла / директории
- * <p>{@code type} - тип объекта {@link ru.svetlov.domain.file.FileType}
+ * <p>{@code type} - тип объекта {@link FileType}
  * <p>{@code size} - размер файла
  * <p>{@code filename} - время последнего изменения
  * <p>для директорий возможно задать список потомков {@link #children children}

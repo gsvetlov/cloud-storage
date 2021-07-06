@@ -1,14 +1,14 @@
 package integration;
 
-import ru.svetlov.domain.file.FileStructureInfo;
-import ru.svetlov.storage.client.service.file.FileViewService;
-import ru.svetlov.storage.client.service.file.impl.LocalFileService;
+import ru.svetlov.domain.service.viewer.FileInfoProvider;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
+import ru.svetlov.storage.client.service.viewer.impl.LocalFileService;
 
 public class TestFileServiceTest {
-    private static FileViewService service;
+    private static FileInfoProvider service;
     public static void main(String[] args) {
         service = new LocalFileService();
-        service.getListView("c:/java").forEach(TestFileServiceTest::displayViewObject);
+        service.getList("c:/java", null).forEach(TestFileServiceTest::displayViewObject);
     }
 
     private static void displayViewObject(FileStructureInfo o){
@@ -17,6 +17,6 @@ public class TestFileServiceTest {
                 .append(o.getFilename()).append("|")
                 .append(o.getLastModified()).append("|")
                 .append(o.getSize()).append("|");
-        System.out.println(sb.toString());
+        System.out.println(sb);
     }
 }

@@ -1,6 +1,6 @@
 package ru.svetlov.storage.client.service.router;
 
-import ru.svetlov.domain.file.FileStructureInfo;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
 
 import java.io.IOException;
 import java.util.List;

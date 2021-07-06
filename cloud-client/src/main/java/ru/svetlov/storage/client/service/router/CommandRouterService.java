@@ -11,7 +11,7 @@ import ru.svetlov.domain.command.FileListRequest;
 import ru.svetlov.domain.command.LoginRequest;
 import ru.svetlov.domain.command.base.CommandType;
 import ru.svetlov.domain.command.base.ReplyCommand;
-import ru.svetlov.domain.file.FileStructureInfo;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
 import ru.svetlov.storage.client.service.network.NetworkClient;
 
 import java.io.IOException;

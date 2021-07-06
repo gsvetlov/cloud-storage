@@ -1,6 +1,6 @@
-package ru.svetlov.storage.client.service.file;
+package ru.svetlov.storage.client.service.viewer;
 
-import ru.svetlov.domain.file.FileStructureInfo;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
 
 import java.nio.file.Path;
 import java.util.List;

@@ -7,12 +7,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.stage.WindowEvent;
-import ru.svetlov.domain.file.FileStructureInfo;
+import ru.svetlov.domain.service.viewer.domain.FileStructureInfo;
 import ru.svetlov.storage.client.controller.util.TreeViewBuilder;
 import ru.svetlov.storage.client.controller.util.TreeViewHandler;
 import ru.svetlov.storage.client.controller.util.UserAlert;
 import ru.svetlov.storage.client.factory.Factory;
-import ru.svetlov.domain.file.FileType;
+import ru.svetlov.domain.service.viewer.domain.FileType;
 import ru.svetlov.storage.client.service.adapter.CloudClientService;
 
 import java.net.URL;

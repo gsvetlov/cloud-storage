@@ -10,6 +10,7 @@ public class PipelineManager {
     }
 
     public void configure(PipelineConfigurationType type){
+        // TODO: конфигурировать пайплайн
 
     }
 

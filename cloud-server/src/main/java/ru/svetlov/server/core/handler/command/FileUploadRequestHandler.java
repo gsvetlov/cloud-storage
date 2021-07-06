@@ -8,7 +8,7 @@ import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.domain.command.UploadChunksReply;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
 import ru.svetlov.server.core.domain.UserContext;
-import ru.svetlov.server.service.file.FileUploadService;
+import ru.svetlov.server.service.transfer.FileUploadService;
 
 @ACommandHandler(command = CommandType.REQUEST_FILE_UPLOAD)
 public class FileUploadRequestHandler implements CommandHandler {
