@@ -1,7 +1,7 @@
 package ru.svetlov.storage.client.factory;
 
-import ru.svetlov.storage.client.service.adapter.CloudClient;
-import ru.svetlov.storage.client.service.adapter.CloudClientAdapter;
+import ru.svetlov.storage.client.service.adapter.CloudClientService;
+import ru.svetlov.storage.client.service.adapter.impl.CloudClientServiceAdapter;
 import ru.svetlov.storage.client.service.router.RemoteStorageService;
 import ru.svetlov.storage.client.service.file.FileViewService;
 import ru.svetlov.storage.client.service.file.impl.LocalFileService;
@@ -22,7 +22,7 @@ public class Factory {
         return new CommandRouterService(Factory.getNetworkClient());
     }
 
-    public static CloudClient getCloudClient() {
-        return new CloudClientAdapter(getLocalStorage(), getRemoteStorage());
+    public static CloudClientService getCloudClient() {
+        return new CloudClientServiceAdapter(getLocalStorage(), getRemoteStorage());
     }
 }

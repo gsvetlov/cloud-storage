@@ -7,12 +7,12 @@ import ru.svetlov.storage.client.common.BiCallback;
 
 import java.util.List;
 
-public interface CloudClient {
+public interface CloudClientService {
     void shutdown();
     void login(String host, String port, String username, String password);
-    void listLocalDirectory(TreeItem<FileStructureInfo> item);
+    void listLocal(TreeItem<FileStructureInfo> item);
     void uploadFile(FileStructureInfo file);
-    void listRemoteDirectory(TreeItem<FileStructureInfo> item);
+    void listRemote(TreeItem<FileStructureInfo> item);
     void downloadFile(FileStructureInfo file);
     void setLoginEventHandler(Callback<String> callback);
     void setUploadEventHandler(Callback<String> callback);

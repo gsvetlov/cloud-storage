@@ -1,9 +1,10 @@
-package ru.svetlov.storage.client.service.adapter;
+package ru.svetlov.storage.client.service.adapter.impl;
 
 import javafx.scene.control.TreeItem;
 import ru.svetlov.domain.file.FileStructureInfo;
 import ru.svetlov.storage.client.common.Callback;
 import ru.svetlov.storage.client.common.BiCallback;
+import ru.svetlov.storage.client.service.adapter.CloudClientService;
 import ru.svetlov.storage.client.service.file.FileViewService;
 import ru.svetlov.domain.file.FileType;
 import ru.svetlov.storage.client.service.router.RemoteOperationResult;
@@ -14,7 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-public class CloudClientAdapter implements CloudClient {
+public class CloudClientServiceAdapter implements CloudClientService {
     private Callback<String> loginHandler;
     private Callback<String> uploadHandler;
     private Callback<String> downloadHandler;
@@ -24,7 +25,7 @@ public class CloudClientAdapter implements CloudClient {
     private final FileViewService localView;
     private final RemoteStorageService remoteStorage;
 
-    public CloudClientAdapter(FileViewService localView, RemoteStorageService remoteStorage) {
+    public CloudClientServiceAdapter(FileViewService localView, RemoteStorageService remoteStorage) {
         this.localView = localView;
         this.remoteStorage = remoteStorage;
     }
@@ -49,12 +50,12 @@ public class CloudClientAdapter implements CloudClient {
     }
 
     @Override
-    public void listLocalDirectory(TreeItem<FileStructureInfo> item) {
+    public void listLocal(TreeItem<FileStructureInfo> item) {
         listDirectory(item, false);
     }
 
     @Override
-    public void listRemoteDirectory(TreeItem<FileStructureInfo> item) {
+    public void listRemote(TreeItem<FileStructureInfo> item) {
         listDirectory(item, true);
     }
 
