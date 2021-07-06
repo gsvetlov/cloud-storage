@@ -9,7 +9,6 @@ import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
 import ru.svetlov.domain.command.LoginRequest;
-import ru.svetlov.domain.command.TestRequest;
 import ru.svetlov.domain.command.base.ReplyCommand;
 import ru.svetlov.domain.command.base.RequestCommand;
 
@@ -99,9 +98,9 @@ public class NettyCommTest {
 //                return;
 //            }
 
-            StringBuilder sb = new StringBuilder(rep.getCommand());
+            StringBuilder sb = new StringBuilder(rep.getCommand().asString());
             sb.append(" request Id: ").append(rep.getRequestId())
-                    .append("; replyId: ").append(rep.getReplyId()).append("\n")
+                    .append("; replyId: ").append("\n")
                     .append(rep.getParameters()[0]).append("\n");
             System.out.println(sb);
 
@@ -143,12 +142,12 @@ public class NettyCommTest {
 //            channel.writeAndFlush(testCommand);
 //            sleep(200);
 //        }
-        sleep(5000);
-        for (int i = 1; i < 4; i++) {
-            RequestCommand genericRequest = new TestRequest(i, "GenericRequest", new Object[]{pid + i});
-            channel.writeAndFlush(genericRequest);
-            sleep(500);
-        }
+//        sleep(5000);
+//        for (int i = 1; i < 4; i++) {
+//            RequestCommand genericRequest = new TestRequest(i, "GenericRequest", new Object[]{pid + i});
+//            channel.writeAndFlush(genericRequest);
+//            sleep(500);
+//        }
         for (int i = 1; i < 4; i++) {
             LoginRequest l = new LoginRequest(100 + i, "me", "mySecretPass");
             channel.writeAndFlush(l);

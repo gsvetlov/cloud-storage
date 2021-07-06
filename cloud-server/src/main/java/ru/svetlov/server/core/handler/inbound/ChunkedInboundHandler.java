@@ -7,17 +7,21 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.stream.ChunkedWriteHandler;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.svetlov.domain.command.UploadChunksRequest;
-import ru.svetlov.server.core.common.UserContext;
+import ru.svetlov.server.core.domain.UserContext;
 import ru.svetlov.server.factory.Factory;
-import ru.svetlov.server.service.file.FileUploader;
+import ru.svetlov.server.service.transfer.FileUploadService;
 
 public class ChunkedInboundHandler extends ChannelInboundHandlerAdapter {
-    private final FileUploader uploader;
+    private static final Logger log = LogManager.getLogger();
+    private final FileUploadService uploader;
     private final UserContext context;
     private final UploadChunksRequest request;
     private long bytesReceived;
-    public ChunkedInboundHandler(FileUploader uploader, UserContext context, UploadChunksRequest request) {
+
+    public ChunkedInboundHandler(FileUploadService uploader, UserContext context, UploadChunksRequest request) {
         this.uploader = uploader;
         this.context = context;
         this.request = request;
@@ -25,23 +29,30 @@ public class ChunkedInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf buf = (ByteBuf) msg;
-        int chunkSize = buf.readableBytes();
-        if (uploader.upload(context, request.getRequestId(), ByteBufUtil.getBytes(buf)))
-            bytesReceived += chunkSize;
-        buf.release();
-        printReport(bytesReceived);
+        ByteBuf buf = null;
+        try {
+            buf = (ByteBuf) msg;
+            int chunkSize = buf.readableBytes();
+
+            if (uploader.upload(context, request.getRequestId(), ByteBufUtil.getBytes(buf))) {
+                bytesReceived += chunkSize;
+            }
+        } finally {
+            buf.release();
+        }
+        logReport(bytesReceived);
         if (bytesReceived < request.getFileSize()) return;
-        System.out.println("restoring pipeline");
+
         ctx.pipeline().addFirst(new ObjectDecoder(ClassResolvers.cacheDisabled(null))); // TODO: убрать в конфигуратор пайплайна
         ctx.pipeline().remove(ChunkedWriteHandler.class);
         ctx.pipeline().replace(ChunkedInboundHandler.class, "", new InboundRequestHandler(Factory.getInstance().getCommandPool()));
     }
 
     private StringBuilder sb = new StringBuilder();
-    private void printReport(long bytesReceived){
+
+    private void logReport(long bytesReceived) {
         sb.setLength(0);
         sb.append("Received: ").append(bytesReceived).append(" / ").append(request.getFileSize());
-        System.out.println(sb);
+        log.trace(sb.toString());
     }
 }

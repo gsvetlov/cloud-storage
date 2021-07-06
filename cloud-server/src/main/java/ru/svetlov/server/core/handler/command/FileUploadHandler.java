@@ -1,22 +1,22 @@
 package ru.svetlov.server.core.handler.command;
 
 import ru.svetlov.domain.command.*;
-import ru.svetlov.domain.command.base.Commands;
+import ru.svetlov.domain.command.base.CommandType;
 import ru.svetlov.domain.command.base.GenericCommand;
 import ru.svetlov.domain.command.base.annotations.ACommandHandler;
-import ru.svetlov.server.core.common.UserContext;
-import ru.svetlov.server.service.file.FileUploader;
+import ru.svetlov.server.core.domain.UserContext;
+import ru.svetlov.server.service.transfer.FileUploadService;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@ACommandHandler(command = Commands.REPLY_UPLOAD_FILE)
+@ACommandHandler(command = CommandType.REPLY_UPLOAD_FILE)
 public class FileUploadHandler implements CommandHandler {
     private static final int RETRY_COUNT = 3;
-    private final FileUploader uploadHandler;
+    private final FileUploadService uploadHandler;
     private final Map<UserContext, Map<Integer, Integer>> retriesMap;
 
-    public FileUploadHandler(FileUploader uploader) {
+    public FileUploadHandler(FileUploadService uploader) {
         this.uploadHandler = uploader;
         retriesMap = new HashMap<>();
     }
@@ -24,14 +24,14 @@ public class FileUploadHandler implements CommandHandler {
     @Override
     public GenericCommand process(GenericCommand command, UserContext context) {
         UploadReply reply = (UploadReply) command;
-        int retry =  addRequest(context, reply.getRequestId());
+        int retry = addRequest(context, reply.getRequestId());
         byte[] file = (byte[]) reply.getParameters()[0];
         if (uploadHandler.upload(context, reply.getRequestId(), file)) {
             clearRequest(context, reply.getRequestId());
-            return new UploadDoneReply(reply.getReplyId() + 1, reply.getRequestId());
+            return new UploadDoneReply(reply.getRequestId());
         }
-        if (retry == RETRY_COUNT) return new RequestInvalidReply(reply.getReplyId() + 1, reply.getRequestId());
-        return new UploadRetryReply(reply.getReplyId() + 1, reply.getRequestId());
+        if (retry == RETRY_COUNT) return new RequestInvalidReply(reply.getRequestId());
+        return new UploadRetryReply(reply.getRequestId());
     }
 
     private int addRequest(UserContext context, int requestId) {

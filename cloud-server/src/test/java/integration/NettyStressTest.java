@@ -8,8 +8,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.serialization.ClassResolvers;
 import io.netty.handler.codec.serialization.ObjectDecoder;
 import io.netty.handler.codec.serialization.ObjectEncoder;
+import ru.svetlov.domain.command.FileListRequest;
 import ru.svetlov.domain.command.base.GenericCommand;
-import ru.svetlov.domain.command.TestCommand;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -132,7 +132,7 @@ public class NettyStressTest {
 
     private void sendCommands(Channel channel) {
         for (int i = 0; i < REQUESTS; i++) {
-            GenericCommand testCommand = new TestCommand();
+            GenericCommand testCommand = new FileListRequest(1, "");
             testCommand.setParameters(new Object[]{pid + i});
             channel.writeAndFlush(testCommand);
             sleep(1000 / FLOOD_RATE);

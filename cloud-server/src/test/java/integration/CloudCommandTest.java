@@ -87,9 +87,8 @@ public class CloudCommandTest {
         @Override
         protected void channelRead0(ChannelHandlerContext ctx, ReplyCommand rep) throws Exception {
             System.out.println("Reply received");
-            StringBuilder sb = new StringBuilder(rep.getCommand());
-            sb.append(" request Id: ").append(rep.getRequestId())
-                    .append("; replyId: ").append(rep.getReplyId()).append("\n");
+            StringBuilder sb = new StringBuilder(rep.getCommand().asString());
+            sb.append(" request Id: ").append(rep.getRequestId()).append("\n");
             for (Object o : rep.getParameters()) {
                 sb.append(o).append("\n");
                 if (o instanceof String) {
@@ -131,7 +130,7 @@ public class CloudCommandTest {
         channel.writeAndFlush(rq);
         sleep(1000);
         byte[] file = readFileBytes("C:\\temp\\temp\\StarGame-res\\background01.png");
-        UploadReply rp = new UploadReply(2, rq.getRequestId(), file);
+        UploadReply rp = new UploadReply(rq.getRequestId(), file);
         System.out.println("sending file...");
         channel.writeAndFlush(rp);
         sleep(2000);

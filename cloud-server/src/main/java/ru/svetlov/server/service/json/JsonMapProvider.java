@@ -9,16 +9,14 @@ import com.fasterxml.jackson.databind.ObjectWriter;
  */
 
 public class JsonMapProvider {
-    private final static Object _lock = new Object();
-    private static volatile JsonMapProvider _instance;
+    private static final JsonMapProvider instance;
+
+    static {
+        instance = new JsonMapProvider();
+    }
 
     public static JsonMapProvider getInstance() {
-        if (_instance != null) return _instance;
-        synchronized (_lock) {
-            if (_instance != null) return _instance;
-            _instance = new JsonMapProvider();
-        }
-        return _instance;
+        return instance;
     }
 
     private final ObjectMapper mapper;

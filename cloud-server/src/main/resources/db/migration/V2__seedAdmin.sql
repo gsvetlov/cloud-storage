@@ -1,0 +1,1 @@
+INSERT INTO users values('admin', 'admin', 2, 'c:/temp');
